@@ -6,6 +6,11 @@ public class Configuration {
 		OPEN_ACCOUNT, GET_LOAN, TRANSFER_LOAN, PRINT_INFO, DELAY_LOAN;
 	}
 	
+	public enum notificationType
+	{
+		SOFTWARE_FAILURE, CRASH
+	}
+	
 	public static final String SERVER_1_NAME = "Bank1";
 	public static final String SERVER_2_NAME = "Bank2";
 	public static final String SERVER_3_NAME = "Bank3";

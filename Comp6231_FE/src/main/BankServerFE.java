@@ -152,7 +152,7 @@ public class BankServerFE extends BankServer.BankServerInterfacePOA implements R
 		try
 		{
 			int requestId = forwardRequest(account.bankName, clientRequest);	
-			String requestIdStr = Integer.toString(requestId);
+			String requestIdStr = Integer.toString(requestId);						
 			
 			boolean noReply = true;
 			while(noReply)
@@ -320,7 +320,7 @@ public class BankServerFE extends BankServer.BankServerInterfacePOA implements R
 		UDPProtocol msg = new UDPProtocol();
 		msg.setClientRequest(request);		
 		
-		int currentRequestId = clientRequestCounter++;
+		final int currentRequestId = clientRequestCounter++;
 		int BankId = 0;
 		
 		switch (bankName)
@@ -343,6 +343,14 @@ public class BankServerFE extends BankServer.BankServerInterfacePOA implements R
 		try
 		{
 			UDPSender.sendUDPPacket(Configuration.SEQUENCER_IP, Configuration.SEQUENCER_PORT, msg);
+			
+			Thread replyController = new Thread(new Runnable() {
+	            public void run()
+	            {
+	            	processReplies(currentRequestId);            	
+	            }
+	        });
+			
 			return currentRequestId;
 		}catch (IOException e)
 		{
@@ -355,68 +363,67 @@ public class BankServerFE extends BankServer.BankServerInterfacePOA implements R
 	private void processReplies(int requestId)
 	{
 		Object finalReply = null;		
-		long startTime = System.currentTimeMillis();		
+		long startTime = System.currentTimeMillis();
+		long elapsedTime;
+		long slowestReplyTime = 0;
 		boolean waitingForReplies = true;
+		boolean slowestReplyTimeSet = false;
 		
 		try
-		{
-			DatagramSocket feSocket = new DatagramSocket(Configuration.FE_PORT);
-			byte[] buffer2;
-			List<ReplicaReplyContent> replies = new ArrayList<ReplicaReplyContent>();
+		{								
+			String key = Integer.toString(requestId);
+			List<ReplicaReplyContent> replies;
+			
 			while(waitingForReplies)
 			{
-				buffer2 = new byte[1000];				
-				
-				DatagramPacket reply = new DatagramPacket(buffer2, buffer2.length);
-				feSocket.receive(reply);
-				
-				UDPProtocol message = processIncomingPacket(reply);
-				if (message == null)
-				{
-					continue;
-				}
-				
-				if (message.getFeHeader().getRequestId() != requestId)
-				{
-					continue;
-				}
-				
-				replies.add(message.getReplicaReply());
-				
-				if(replies.size() == 2)
-				{
-					waitingForReplies = false;
-					
-					//compare 2 replies, if identical: add reply to approvedRepliesMap
-									
-					int elapsedTime = (int) (System.currentTimeMillis() - startTime);
-					
-					feSocket.setSoTimeout(elapsedTime * 2);
-					//wait for 3rd reply twice the slowest
-					try {
-						buffer2 = new byte[1000];	
-						reply = new DatagramPacket(buffer2, buffer2.length);
-						feSocket.receive(reply);
-		                
-						//compare replies
-						//if 3 identical => continue
-						//if 2 identical
-							//first 2 not identical: => add reply to approvedRepliesMap
-							//report possible software failure
-		            }
-		            catch (SocketTimeoutException e) {
-		                // timeout exception.
-		              
-		            	//possible crash
-		            	//notify replicas
-		            }														
-					
-				}											
-				
-			}		
-			
-			feSocket.close();
-	
+				 if (repliesMap.containsKey(key)) {
+					 replies = repliesMap.get(key);
+					 
+					 if(replies.size() == 3)
+					 {
+						 if(replies.get(0).getResult()==replies.get(1).getResult() && replies.get(1).getResult() == replies.get(2).getResult())
+							 validatedRepliesMap.put(key, replies.get(1).getResult());
+						 else if(replies.get(0).getResult()==replies.get(1).getResult())
+						 {
+							 validatedRepliesMap.put(key, replies.get(1).getResult());
+							 notifyReplicasOfBug(replies.get(2).getResultSender());
+						 }
+						 else if(replies.get(0).getResult()==replies.get(2).getResult())
+						 {
+							 validatedRepliesMap.put(key, replies.get(0).getResult());
+							 notifyReplicasOfBug(replies.get(1).getResultSender());
+						 }
+						 else// if(replies.get(1).getResult()==replies.get(2).getResult())
+						 {
+							 validatedRepliesMap.put(key, replies.get(1).getResult());
+							 notifyReplicasOfBug(replies.get(0).getResultSender());
+						 }
+						 waitingForReplies = false;							 
+					 }					 
+					 else if(replies.size() == 2 && slowestReplyTimeSet == false)
+					 {							
+							
+						//compare 2 replies, if identical: add reply to approvedRepliesMap
+						 if(replies.get(0).getResult()==replies.get(1).getResult())
+						 {
+							 validatedRepliesMap.put(key, replies.get(1).getResult());							 
+						 }
+						 slowestReplyTime = (System.currentTimeMillis() - startTime) * 2;					 																								              				            
+						 slowestReplyTimeSet = true;													
+					 }		
+					 else if(slowestReplyTimeSet == true)
+					 {
+						 elapsedTime = System.currentTimeMillis() - startTime;
+					 
+						 if(elapsedTime >= slowestReplyTime)
+						 {
+							//possible crash
+							waitingForReplies = false;														 
+							notifyReplicasOfCrash(replies.get(0).getResultSender(), replies.get(1).getResultSender());				 
+						 }
+					 }
+				 } 																														
+			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -436,5 +443,15 @@ public class BankServerFE extends BankServer.BankServerInterfacePOA implements R
 	        valuesList.add(value);
 	        repliesMap.put(key, valuesList);
 	      }	    
-	  }
+	}		
+	
+	private void notifyReplicasOfBug(String faultyReplica)
+	{
+		//must notify all three
+	}
+	
+	private void notifyReplicasOfCrash(String replica1, String replica2)
+	{
+		//must notify only the two correct ones
+	}
 }
