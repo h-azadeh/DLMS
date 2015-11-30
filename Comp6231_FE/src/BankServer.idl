@@ -1,0 +1,25 @@
+module BankServer {
+		struct CustomerAccount{
+			string bankName;
+			string customerAccountNumber;
+			string firstName;
+			string lastName;
+			string emailAddress;
+			string phoneNumber;
+			string password;
+			long creditLimit;
+			string loansInfo;
+	};
+	
+	typedef sequence <CustomerAccount> AccountsMap;
+	
+	interface BankServerInterface {
+	
+		string openAccount(in CustomerAccount account);			
+		boolean getLoan(in string bankName,in string accNumber,in string password,in long loanAmount);
+		string delayPayment(in string bankName,in long loanId,in string curDueDate,in string newDueDate);									
+		AccountsMap printCustomerInfo(in string bankName);
+		string transferLoan(in long loanID, in string CurrentBank, in string OtherBank);
+		
+	};		
+};
