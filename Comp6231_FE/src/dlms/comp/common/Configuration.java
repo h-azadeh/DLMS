@@ -1,5 +1,9 @@
 package dlms.comp.common;
 
+/**
+ * Configuration class for sequencer
+ *
+ */
 public class Configuration
 {
 	public enum requestType

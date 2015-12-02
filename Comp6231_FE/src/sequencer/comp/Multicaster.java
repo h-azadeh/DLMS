@@ -13,24 +13,31 @@ import dlms.comp.common.protocol.UDPProtocol;
 public class Multicaster
 {
 
-	public static void multiCastMessage(UDPProtocol message)
-	{
-		try
-		{
-			DatagramSocket serverSocket = new DatagramSocket();
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			ObjectOutputStream os = new ObjectOutputStream(outputStream);
-			os.writeObject(message);
-			byte[] data = outputStream.toByteArray();
+    /**
+     * Multicast the message to MULTI_CAST_INET_ADDR
+     * 
+     * @param message
+     *            message to be multicasted
+     */
+    public static void multiCastMessage(UDPProtocol message)
+    {
+        try
+        {
+            DatagramSocket serverSocket = new DatagramSocket();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream os = new ObjectOutputStream(outputStream);
+            os.writeObject(message);
+            byte[] data = outputStream.toByteArray();
 
-			InetAddress group = InetAddress.getByName(Configuration.MULTI_CAST_INET_ADDR);
-			DatagramPacket packet = new DatagramPacket(data, data.length, group, Configuration.MULTI_CAST_INET_PORT);
-			serverSocket.send(packet);
+            InetAddress group = InetAddress.getByName(Configuration.MULTI_CAST_INET_ADDR);
+            DatagramPacket packet = new DatagramPacket(data, data.length, group,
+                    Configuration.MULTI_CAST_INET_PORT);
+            serverSocket.send(packet);
 
-			serverSocket.close();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
+            serverSocket.close();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }
