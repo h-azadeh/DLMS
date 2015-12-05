@@ -140,7 +140,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 
 	@Override
 	public String openAccount(CustomerAccount account)
-	{
+	{		
 		ClientRequestContent clientRequest = new ClientRequestContent();
 
 		clientRequest.setRequestType(dlms.comp.common.Configuration.requestType.OPEN_ACCOUNT);
@@ -248,10 +248,43 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 	}
 
 	@Override
-	public CustomerAccount[] printCustomerInfo(String bankName)
-	{
-		// TODO Auto-generated method stub
-		return null;
+	public String[] printCustomerInfo(String bankName)
+	{								
+		ClientRequestContent clientRequest = new ClientRequestContent();
+
+		clientRequest.setRequestType(dlms.comp.common.Configuration.requestType.PRINT_INFO);		
+
+		String[] finalReply = new String[100];
+		String[] reply = new String[100];				
+
+		try
+		{
+			int requestId = forwardRequest(bankName, clientRequest);
+			String requestIdStr = Integer.toString(requestId);
+
+			boolean noReply = true;
+			while (noReply)
+			{
+				if (validatedRepliesMap.containsKey(requestIdStr))
+					noReply = false;
+			}
+
+			reply = (String[]) validatedRepliesMap.get(requestIdStr);	
+			
+			for(int i=0; i<100; i++)
+			{
+				if(reply[i] == null)
+					finalReply[i] = "";
+				else 
+					finalReply[i] = reply[i];
+			}
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return finalReply;
 	}
 
 	@Override

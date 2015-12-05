@@ -66,7 +66,7 @@ public class BankServerInterfaceHelper
         return _id;
     }
 
-    private final static String _id = "IDL:fe.bankserver/BankServerInterface:1.0";
+    private final static String _id = "IDL:bankServer/BankServerInterface:1.0";
 
     /**
      * Read BankServerInterface from a marshalled stream

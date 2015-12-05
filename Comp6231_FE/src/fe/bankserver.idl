@@ -1,4 +1,4 @@
-module BankServer {
+module bankServer {
 		struct CustomerAccount{
 			string bankName;
 			string customerAccountNumber;
@@ -11,14 +11,15 @@ module BankServer {
 			string loansInfo;
 	};
 	
-	typedef sequence <CustomerAccount> AccountsMap;
+	//typedef sequence <CustomerAccount> AccountsMap;
+	typedef string Account[100]; 
 	
 	interface BankServerInterface {
 	
 		string openAccount(in CustomerAccount account);			
 		boolean getLoan(in string bankName,in string accNumber,in string password,in long loanAmount);
 		string delayPayment(in string bankName,in long loanId,in string curDueDate,in string newDueDate);									
-		AccountsMap printCustomerInfo(in string bankName);
+		Account printCustomerInfo(in string bankName);
 		string transferLoan(in long loanID, in string CurrentBank, in string OtherBank);
 		
 	};		

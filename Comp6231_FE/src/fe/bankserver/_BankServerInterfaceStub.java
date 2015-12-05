@@ -10,7 +10,7 @@ public class _BankServerInterfaceStub extends org.omg.CORBA.portable.ObjectImpl
 {
     static final String[] _ids_list =
     {
-        "IDL:fe.bankserver/BankServerInterface:1.0"
+        "IDL:bankServer/BankServerInterface:1.0"
     };
 
     public String[] _ids()
@@ -179,7 +179,7 @@ public class _BankServerInterfaceStub extends org.omg.CORBA.portable.ObjectImpl
     /**
      * Operation printCustomerInfo
      */
-    public fe.bankserver.CustomerAccount[] printCustomerInfo(String bankName)
+    public String[] printCustomerInfo(String bankName)
     {
         while(true)
         {
@@ -191,7 +191,7 @@ public class _BankServerInterfaceStub extends org.omg.CORBA.portable.ObjectImpl
                     org.omg.CORBA.portable.OutputStream _output = this._request("printCustomerInfo",true);
                     _output.write_string(bankName);
                     _input = this._invoke(_output);
-                    fe.bankserver.CustomerAccount[] _arg_ret = fe.bankserver.AccountsMapHelper.read(_input);
+                    String[] _arg_ret = fe.bankserver.AccountHelper.read(_input);
                     return _arg_ret;
                 }
                 catch(org.omg.CORBA.portable.RemarshalException _exception)

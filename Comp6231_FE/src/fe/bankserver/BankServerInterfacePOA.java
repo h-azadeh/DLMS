@@ -20,7 +20,7 @@ public abstract class BankServerInterfacePOA extends org.omg.PortableServer.Serv
 
     private static String [] _ids_list =
     {
-        "IDL:fe.bankserver/BankServerInterface:1.0"
+        "IDL:bankServer/BankServerInterface:1.0"
     };
 
     public String[] _all_interfaces(org.omg.PortableServer.POA poa, byte [] objectId)
@@ -103,10 +103,10 @@ public abstract class BankServerInterfacePOA extends org.omg.PortableServer.Serv
         org.omg.CORBA.portable.OutputStream _output;
         String arg0_in = _is.read_string();
 
-        fe.bankserver.CustomerAccount[] _arg_result = printCustomerInfo(arg0_in);
+        String[] _arg_result = printCustomerInfo(arg0_in);
 
         _output = handler.createReply();
-        fe.bankserver.AccountsMapHelper.write(_output,_arg_result);
+        fe.bankserver.AccountHelper.write(_output,_arg_result);
 
         return _output;
     }

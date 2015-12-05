@@ -1,58 +1,58 @@
 package fe.bankserver;
 
 /**
- * Holder class for : BankServerInterface
+ * Holder class for : Account
  * 
  * @author OpenORB Compiler
  */
-final public class BankServerInterfaceHolder
+final public class AccountHolder
         implements org.omg.CORBA.portable.Streamable
 {
     /**
-     * Internal BankServerInterface value
+     * Internal Account value
      */
-    public fe.bankserver.BankServerInterface value;
+    public String[] value;
 
     /**
      * Default constructor
      */
-    public BankServerInterfaceHolder()
+    public AccountHolder()
     { }
 
     /**
      * Constructor with value initialisation
      * @param initial the initial value
      */
-    public BankServerInterfaceHolder(fe.bankserver.BankServerInterface initial)
+    public AccountHolder(String[] initial)
     {
         value = initial;
     }
 
     /**
-     * Read BankServerInterface from a marshalled stream
+     * Read Account from a marshalled stream
      * @param istream the input stream
      */
     public void _read(org.omg.CORBA.portable.InputStream istream)
     {
-        value = BankServerInterfaceHelper.read(istream);
+        value = AccountHelper.read(istream);
     }
 
     /**
-     * Write BankServerInterface into a marshalled stream
+     * Write Account into a marshalled stream
      * @param ostream the output stream
      */
     public void _write(org.omg.CORBA.portable.OutputStream ostream)
     {
-        BankServerInterfaceHelper.write(ostream,value);
+        AccountHelper.write(ostream,value);
     }
 
     /**
-     * Return the BankServerInterface TypeCode
+     * Return the Account TypeCode
      * @return a TypeCode
      */
     public org.omg.CORBA.TypeCode _type()
     {
-        return BankServerInterfaceHelper.type();
+        return AccountHelper.type();
     }
 
 }
