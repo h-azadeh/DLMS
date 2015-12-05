@@ -223,6 +223,18 @@ public class User implements Serializable
 
 		return ret;
 	}
+	
+	public ArrayList<String> toLoanString(ArrayList<String> list)
+	{
+		for (Loan l : m_loanList)
+		{
+			list.add(l.getDueDate());
+			list.add(Double.toString(l.getAmount()));
+			list.add(l.getId());
+		}
+
+		return list;
+	}
 
 	public boolean isCorrectPassword(String psw)
 	{

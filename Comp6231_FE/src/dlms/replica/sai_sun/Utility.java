@@ -38,7 +38,7 @@ public class Utility
 
 	public static String dateToString(Date date)
 	{
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
 		String reportDate = df.format(date);
 
 		return reportDate;
@@ -47,7 +47,7 @@ public class Utility
 	public static Date StringToDate(String date)
 	{
 		Date ret = null;
-		DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+		DateFormat format = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
 		try
 		{
 			ret = format.parse(date);

@@ -127,11 +127,17 @@ public class BankServer
 		}
 		return false;
 	}
-
+	
 	public String printCustomerInfo(String bank)
 	{
 		Logger.getInstance().log(getManagerLogFileName(), "Requested to print all customer info");
 		return m_customerList.getAllCustomerInfoToString(true);
+	}
+	
+	public String[] printCustomerInfoToArray(String bank)
+	{
+		Logger.getInstance().log(getManagerLogFileName(), "Requested to print all customer info");
+		return m_customerList.getAllCustomerInfoToStringArray(true);
 	}
 
 	public String openAccount(String bank, String firstName, String lastName, String emailAddress,

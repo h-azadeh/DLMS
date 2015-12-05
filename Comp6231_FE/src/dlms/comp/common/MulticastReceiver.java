@@ -35,6 +35,8 @@ public class MulticastReceiver implements Runnable
     private TreeMap<Integer, Boolean> processedList = null;
     // list contains messages already casted
     private TreeMap<Integer, Boolean> multicastedList = null;
+    
+    private int lastDeliveredMessageUUID = -1;
 
     /**
      * Constructor
@@ -150,10 +152,16 @@ public class MulticastReceiver implements Runnable
             {
                 UDPProtocol message = receivedList.get(receivedList.firstKey());
                 receivedList.remove(receivedList.firstKey());
+                //if it's the first message we deliver
+                if(lastDeliveredMessageUUID == -1)
+                {
+                	lastDeliveredMessageUUID = message.getSequencerHeader().getUUID();
+                }
                 if (message != null)
                 {
                     notifyIf.notifyMessage(message);
                     processedList.put(message.getSequencerHeader().getUUID(), true);
+                    lastDeliveredMessageUUID = message.getSequencerHeader().getUUID();
                 }
             }
         }

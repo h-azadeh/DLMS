@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import dlms.comp.common.MulticastReceiver;
+import dlms.comp.common.SoftwareBugSimulator;
 import dlms.comp.common.protocol.ReplicaReplyContent;
 import dlms.comp.common.protocol.UDPProtocol;
 import dlms.comp.udp.util.UDPNotifierIF;
@@ -123,11 +124,11 @@ public class Replica implements UDPNotifierIF
                         currentDueDate, newDueDate);
     }
 
-    public String printCustomerInfo(int bankId)
+    public String[] printCustomerInfo(int bankId)
     {
         // return empty string if the bank name can't be found in the server
         // list
-        return getServerById(bankId) == null ? "" : getServerById(bankId).printCustomerInfo(
+        return getServerById(bankId) == null ? new String[]{} : getServerById(bankId).printCustomerInfoToArray(
                 ReplicaConfiguration.BANK_NAME_POOL[bankId - 1]);
     }
 
@@ -156,6 +157,10 @@ public class Replica implements UDPNotifierIF
                     .getLastNmae(), message.getClientRequest().getEmail(), message
                     .getClientRequest().getPhoneNum(), message.getClientRequest().getPassWord(),
                     message.getFeHeader().getBankId());
+            if(SoftwareBugSimulator.shouldGenerateWrongMessage())
+            {
+            	ret = "";
+            }
             reply = new ReplicaReplyContent(ret, "replica1");
             message.setReplicaReply(reply);
             try
@@ -173,6 +178,10 @@ public class Replica implements UDPNotifierIF
             ret = getLoan(Integer.toString(message.getClientRequest().getAccountId()), message
                     .getClientRequest().getPassWord(), message.getClientRequest().getLoanAmount(),
                     message.getFeHeader().getBankId());
+            if(SoftwareBugSimulator.shouldGenerateWrongMessage())
+            {
+            	ret = false;
+            }
             reply = new ReplicaReplyContent(ret, "replica1");
             message.setReplicaReply(reply);
             try
@@ -188,6 +197,10 @@ public class Replica implements UDPNotifierIF
             ret = delayPayment(Integer.toString(message.getClientRequest().getLoanId()), message
                     .getClientRequest().getCurrentDueDate(), message.getClientRequest()
                     .getNewDueDate(), message.getFeHeader().getBankId());
+            if(SoftwareBugSimulator.shouldGenerateWrongMessage())
+            {
+            	ret = false;
+            }
             reply = new ReplicaReplyContent(ret, "replica1");
             message.setReplicaReply(reply);
             try
@@ -201,6 +214,10 @@ public class Replica implements UDPNotifierIF
             break;
         case PRINT_INFO:
             ret = printCustomerInfo(message.getFeHeader().getBankId());
+            if(SoftwareBugSimulator.shouldGenerateWrongMessage())
+            {
+            	ret = new String[]{};
+            }
             reply = new ReplicaReplyContent(ret, "replica1");
             message.setReplicaReply(reply);
             try
@@ -216,6 +233,10 @@ public class Replica implements UDPNotifierIF
             ret = transferLoan(Integer.toString(message.getClientRequest().getLoanId()), message
                     .getClientRequest().getCurrentBank(),
                     message.getClientRequest().getOtherBank(), message.getFeHeader().getBankId());
+            if(SoftwareBugSimulator.shouldGenerateWrongMessage())
+            {
+            	ret = false;
+            }
             reply = new ReplicaReplyContent(ret, "replica1");
             message.setReplicaReply(reply);
             try

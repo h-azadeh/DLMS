@@ -35,8 +35,8 @@ public class CustomerList
 	private final String MANAGER_ACCT = "1,Manager,Manager,514514514,Manager,manager@bank.com,200000,true";
 	private final double DEFAULT_CREDIT_LIMIT = 200000;
 	private boolean loadDataFromFile = false;
-	private int LOAN_COUNTER = 1;
-	private int ACCOUNT_COUNTER = 1;
+	public int LOAN_COUNTER = 1;
+	public int ACCOUNT_COUNTER = 1;
 
 	/**
 	 * Constructor for the customer list
@@ -297,7 +297,7 @@ public class CustomerList
 
 		if (isUserExist(user))
 		{
-			return null;
+			return "000";
 		}
 		// create user log file
 		if (loadDataFromFile)
@@ -548,8 +548,11 @@ public class CustomerList
 	 */
 	public String addLoanToUser(User user, double amount)
 	{
+		Calendar cal = Calendar.getInstance();
+
+		cal.add(Calendar.DAY_OF_YEAR, 365);
 		Loan loan = new Loan(LOAN_COUNTER, user.getAccount(), amount, Utility.dateToString(
-				Calendar.getInstance().getTime()).replace("2015", "2020"));
+				cal.getTime()));
 		user.getLoanList().add(loan);
 		updateUser(user);
 		writeAllCustomerInfoToFiles();
@@ -573,6 +576,30 @@ public class CustomerList
 			}
 		}
 		return ret;
+	}
+	
+	/**
+	 * Print all customer info to string array
+	 * 
+	 * @return
+	 */
+	public String[] getAllCustomerInfoToStringArray(boolean isForPrint)
+	{
+		ArrayList<String> list = new ArrayList<String>();
+		for (String key : m_map.keySet())
+		{
+			for (User u : m_map.get(key))
+			{
+				list.add(u.getFirstName());
+				list.add(u.getLastName());
+				list.add(u.getEmail());
+				list.add(u.getPhone());
+				list.add(u.getUsr());
+				list = u.toLoanString(list);
+				list.add("\n");
+			}
+		}
+		return list.toArray(new String[list.size()]);
 	}
 
 	/**
