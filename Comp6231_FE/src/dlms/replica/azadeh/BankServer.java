@@ -40,7 +40,8 @@ public class BankServer extends Thread{
 	private double loanAmount1 = 0;
 	private double loanAmount2 = 0;		
 	
-	private String transferResultMessge = "";
+	//private String transferResultMessge = "";
+	private boolean transferResultMessge = false;
 		
 	public BankServer(String name) throws IOException
 	{
@@ -460,7 +461,7 @@ public class BankServer extends Thread{
 	}
 	
 	
-	public String delayPayment(int loanId, String curDueDateIdl, String newDueDateIdl)
+	public boolean delayPayment(int loanId, String curDueDateIdl, String newDueDateIdl)
 	{			
 		try				
 		{			
@@ -494,7 +495,7 @@ public class BankServer extends Thread{
 			        		serverOutputBuffer.println("Due date extended for account " + loansList.get(i).GetAccNumber() + " loanId: " + loanId);
 			        		serverOutputBuffer.flush();
 			        		
-			        		return "Due date was successfully updated!";
+			        		return true;
 			        	}
 			        }       			        	
 		        }		             	       	              
@@ -505,7 +506,7 @@ public class BankServer extends Thread{
 		    serverOutputBuffer.println("Due date could not be extended.");
 		    serverOutputBuffer.flush();
 		    
-			return "Due date could not be updated!";
+			return false;
 
 			
 		}
@@ -514,7 +515,7 @@ public class BankServer extends Thread{
 			
 		}
 	
-		return "An error occurred. Please try again!";
+		return false;
 	}
 	
 	
@@ -590,7 +591,7 @@ public class BankServer extends Thread{
 	}
 	
 	
-	public String transferLoan(int loanID, String CurrentBank, String OtherBank) {					
+	public boolean transferLoan(int loanID, String CurrentBank, String OtherBank) {					
 		try
 		{
 			Date operationDate = new Date();
@@ -601,7 +602,8 @@ public class BankServer extends Thread{
 			Loan curLoan = LookupLoan(loanID); 
 			if(curLoan == null)
 			{				
-				return "A loan with the given id could not be found. Please check the loanId and try again!";
+				//return "A loan with the given id could not be found. Please check the loanId and try again!";
+				return false;
 			}
 			
 			serverOutputBuffer.println("Loan found.");
@@ -612,7 +614,8 @@ public class BankServer extends Thread{
 			
 			if(curAccount == null)
 			{
-				return "An error occurred. Please try again!";
+				//return "An error occurred. Please try again!";
+				return false;
 			}
 			
 			serverOutputBuffer.println("Account found: " + curAccount.GetAccNumber());
@@ -680,7 +683,8 @@ public class BankServer extends Thread{
     			serverOutputBuffer.println("Final confirmation sent to other Bank.");
     			serverOutputBuffer.flush();
     			
-    			transferResultMessge = "Loan transfered successfully!";
+    			//transferResultMessge = "Loan transfered successfully!";
+    			transferResultMessge = true;
     		}
     		catch(Exception e)
     		{
@@ -694,7 +698,8 @@ public class BankServer extends Thread{
     			serverOutputBuffer.println("Roll back request sent to other Bank.");
     			serverOutputBuffer.flush();
     			
-    			transferResultMessge = "An error occurred, please try again later!";
+    			//transferResultMessge = "An error occurred, please try again later!";
+    			transferResultMessge = false;
     		}   		    					
 		
 			transferSocket.close();			
@@ -702,7 +707,8 @@ public class BankServer extends Thread{
 			
 		}catch(Exception e){
 			System.out.println(e.getStackTrace());
-			transferResultMessge = "An error occurred, please try again later!";
+			//transferResultMessge = "An error occurred, please try again later!";
+			transferResultMessge = false;
 		}
 		
 		

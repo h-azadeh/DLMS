@@ -1,5 +1,10 @@
 package dlms.replica.azadeh;
 
+import dlms.replica.sai_sun.ReplicaConfiguration;
+
+/*
+ * Replica config
+ */
 public class Configuration {
 	/*
 	Configuration for web service - Servers	
@@ -22,5 +27,19 @@ public class Configuration {
 	
 	public static final String TransferReject = "Reject";
 	public static final String TransferFinalize = "Finalize";
+	
+	public final static String HOST_NAME = "localhost";
+
+    //replica internal communication message types
+    public enum messageType
+    {
+        RequestLoan, LoanAnswer, Transfer, TransferAnswer, ValidateAdmin, RollBack, Commit;
+    }    
+
+    // bank name pool
+    public final static String[] BANK_NAME_POOL =
+    { ReplicaConfiguration.SERVER_1_NAME, ReplicaConfiguration.SERVER_2_NAME,
+    	ReplicaConfiguration.SERVER_3_NAME };
+
 	
 }
