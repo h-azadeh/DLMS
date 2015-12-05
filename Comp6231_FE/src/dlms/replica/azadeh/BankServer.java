@@ -76,11 +76,11 @@ public class BankServer extends Thread{
 			}
 			
 			bSocket = new DatagramSocket(udpPort);
-			byte[] buffer2;// = new byte[1000];
+			byte[] buffer2;
 			
 			while(true)
 			{
-				buffer2 = new byte[1000];				
+				buffer2 = new byte[2048];				
 				
 				DatagramPacket request2 = new DatagramPacket(buffer2, buffer2.length);
 				bSocket.receive(request2);
@@ -641,7 +641,7 @@ public class BankServer extends Thread{
 			DatagramSocket transferSocket = null;
 			//transferSocket = new DatagramSocket(udpPort);
 			transferSocket = new DatagramSocket();
-			byte[] transferBuffer = new byte[1000];			
+			byte[] transferBuffer = new byte[2048];			
 			
 			//String requestString = Configuration.TransferLoanUdpRequestPrefix + "," + ClientFirstName + "," + ClientLastName + "," + String.valueOf(curLoan.GetAmount()) + "," + curLoan.GetDueDate().toString();				
 			String requestString = Configuration.TransferLoanUdpRequestPrefix + "," + ClientFirstName + "," + ClientLastName + "," + String.valueOf(curLoan.GetAmount()) + ",2016-11-01";
@@ -755,7 +755,7 @@ public class BankServer extends Thread{
 			//int serverPort = otherUdpServerPort;
 			DatagramPacket request = new DatagramPacket(m, messageContent.length(), aHost, otherUdpServerPort);
 			aSocket.send(request);
-			byte [] buffer = new byte[1000];
+			byte [] buffer = new byte[2048];
 			DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
 			aSocket.receive(reply);
 			
