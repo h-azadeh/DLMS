@@ -1,7 +1,10 @@
 package dlms.comp.common;
 
+import java.io.File;
+import java.util.Map;
+
 /**
- * in windows cmd, use set SW_BUG=true 
+ * in project root directory create bugFlag.txt
  * to start making wrong return values for a replica
  * @author Sai
  *
@@ -10,15 +13,15 @@ public class SoftwareBugSimulator
 {
 	public static boolean shouldGenerateWrongMessage()
 	{
-		String value = System.getenv("SW_BUG");
-		if (value != null)
-		{
-			if (value.equals("true"))
-			{
-				return true;
-			}
+		File f = new File("bugFlag.txt");
+		if(f.exists() && !f.isDirectory()) { 
+		    return true;
 		}
-
 		return false;
+	}
+	
+	public static void main(String[] args)
+	{
+		System.out.println(shouldGenerateWrongMessage());
 	}
 }
