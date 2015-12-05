@@ -25,7 +25,7 @@ public interface BankServerInterfaceOperations
     /**
      * Operation printCustomerInfo
      */
-    public fe.bankserver.CustomerAccount[] printCustomerInfo(String bankName);
+    public String[] printCustomerInfo(String bankName);
 
     /**
      * Operation transferLoan

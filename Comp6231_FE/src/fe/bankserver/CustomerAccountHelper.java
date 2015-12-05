@@ -127,7 +127,7 @@ public class CustomerAccountHelper
         return _id;
     }
 
-    private final static String _id = "IDL:fe.bankserver/CustomerAccount:1.0";
+    private final static String _id = "IDL:bankServer/CustomerAccount:1.0";
 
     /**
      * Read CustomerAccount from a marshalled stream

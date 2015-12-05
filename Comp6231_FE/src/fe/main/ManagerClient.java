@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
@@ -128,8 +129,8 @@ public class ManagerClient {
 						Date requestDate = new Date();
 						managersOutputBuffer.println(requestDate + ":" + "Request customer info from "+ userInputBankName);
 						
-						try{							
-							CustomerAccount [] accountsList;
+						try{														
+							String[] ReturnedMap = new String[100]; 
 							int count = 0;
 							
 							switch (userInputBankName)
@@ -137,9 +138,8 @@ public class ManagerClient {
 								case Configuration.SERVER_1_NAME:								
 								case Configuration.SERVER_2_NAME:									
 								case Configuration.SERVER_3_NAME:
-									accountsList = FE.printCustomerInfo(userInputBankName);
-									count = accountsList.length;
-									PrintInfo(accountsList, count);
+									ReturnedMap = FE.printCustomerInfo(userInputBankName);																		
+									System.out.println(Arrays.toString(ReturnedMap));
 									break;			
 								default:
 									System.out.println("Invalid Bank name, please try again.");									
@@ -180,7 +180,7 @@ public class ManagerClient {
 		System.out.println("2. Print Customer Info");		
 		System.out.println("3. Exit");
 	}	
-
+/*
 	private static void PrintInfo(CustomerAccount [] accountsList, int count)
 	{
 		for(int k = 0; k < count; k++)
@@ -195,5 +195,5 @@ public class ManagerClient {
 		}		
 		
 	}
-
+*/
 }
