@@ -64,7 +64,7 @@ public class UDPfe implements Runnable
 		aMulticasterThread1.start();
 		aMulticasterThread2.start();
 	}
-	Integer conID = Integer.parseInt(splited[2]);
+	Integer conID = Integer.parseInt(splited[1]);
 	String whoIsFaulty = null;
 	if(conID.equals(myRM.consecutiveID) && !myRM.notificationID.equals(Integer.parseInt(reqID.trim()))
 			&& myRM.myHostIP.equals(splited[0]))
