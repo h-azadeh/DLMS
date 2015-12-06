@@ -120,6 +120,11 @@ public class CustomerClient {
 						outputBuffer.println(responseDate + ": opened account "+ serverResponse);						
 						System.out.println(serverResponse);
 						
+						if(serverResponse.equals(Configuration.ACCOUNT_EXISTS))
+						{
+							System.out.println("Customer already has an account with this Bank!");
+						}
+						
 						outputBuffer.close();
 				        logFile.close();
 					}catch(RemoteException e){
