@@ -39,6 +39,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 
 	private int clientRequestCounter;
 	private int repliedRequestCounter;
+	private int notificationCounter;
 
 	private Map<String, List<ReplicaReplyContent>> repliesMap;
 	private Map<String, Object> validatedRepliesMap;
@@ -570,9 +571,24 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 	private void notifyReplicasOfBug(String faultyReplica)
 	{
 		System.out.println("Notify all replicas of software failure: " + faultyReplica);
-				
+		notificationCounter++;
+		
 		String msg = faultyReplica;
+		switch(faultyReplica)
+		{
+			case dlms.comp.common.Configuration.Replica1_Name:
+				msg = dlms.comp.common.Configuration.Replica_1_Host;
+				break;
+			case dlms.comp.common.Configuration.Replica2_Name:
+				msg = dlms.comp.common.Configuration.Replica_2_Host;
+				break;
+			case dlms.comp.common.Configuration.Replica3_Name:
+				msg = dlms.comp.common.Configuration.Replica_3_Host;
+				break;
+		}		
+		
 		//Todo: Add notificationId and consecutiveId as requested by Milad
+		msg = msg + "-" + notificationCounter + "-0";
 		
 		// must notify all three
 		try
@@ -590,7 +606,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 	private void notifyReplicasOfCrash(String replica1, String replica2)
 	{
 		System.out.println("Notify " + replica1 + " and " + replica2 + " of possible crash of the other replica.");
-		
+		notificationCounter++;
 		String msg = "";		
 		
 		// must notify only the two correct ones
@@ -598,19 +614,25 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 		{
 			if(replica1.equalsIgnoreCase(dlms.comp.common.Configuration.Replica1_Name) && replica2.equalsIgnoreCase(dlms.comp.common.Configuration.Replica2_Name))
 			{
-				msg = dlms.comp.common.Configuration.Replica3_Name;
+				//msg = dlms.comp.common.Configuration.Replica3_Name;
+				msg = dlms.comp.common.Configuration.Replica_3_Host;
+				msg = msg + "-" + notificationCounter + "-0";
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_1_Host, dlms.comp.common.Configuration.Replica_1_PORT, msg);
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_2_Host, dlms.comp.common.Configuration.Replica_2_PORT, msg);
 			}				
 			else if(replica1.equalsIgnoreCase(dlms.comp.common.Configuration.Replica1_Name) && replica2.equalsIgnoreCase(dlms.comp.common.Configuration.Replica3_Name))
 			{
-				msg = dlms.comp.common.Configuration.Replica2_Name;
+				//msg = dlms.comp.common.Configuration.Replica2_Name;
+				msg = dlms.comp.common.Configuration.Replica_2_Host;
+				msg = msg + "-" + notificationCounter + "-0";
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_1_Host, dlms.comp.common.Configuration.Replica_1_PORT, msg);
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_3_Host, dlms.comp.common.Configuration.Replica_3_PORT, msg);				
 			}				
 			else
 			{
-				msg = dlms.comp.common.Configuration.Replica1_Name;
+				//msg = dlms.comp.common.Configuration.Replica1_Name;
+				msg = dlms.comp.common.Configuration.Replica_1_Host;
+				msg = msg + "-" + notificationCounter + "-0";
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_2_Host, dlms.comp.common.Configuration.Replica_2_PORT, msg);
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_3_Host, dlms.comp.common.Configuration.Replica_3_PORT, msg);
 			}															

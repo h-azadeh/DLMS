@@ -23,11 +23,11 @@ public class Configuration
 	public final static String Replica2_Name = "Replica2"; //Azadeh
 	public final static String Replica3_Name = "Replica3"; //Milad
 	
-	public final static String Replica_1_Host = "localhost";
-	public final static String Replica_2_Host = "localhost";
-	public final static String Replica_3_Host = "localhost";
+	public final static String Replica_1_Host = "mascouten";
+	public final static String Replica_2_Host = "mechoopda";
+	public final static String Replica_3_Host = "menominee";
 	
-	public final static int Replica_1_PORT = 9007;
-	public final static int Replica_2_PORT = 9008;
-	public final static int Replica_3_PORT = 9009;
+	public final static int Replica_1_PORT = 5996;
+	public final static int Replica_2_PORT = 5996;
+	public final static int Replica_3_PORT = 5996;
 }
