@@ -64,6 +64,9 @@ public class Replica implements UDPNotifierIF
     private void addServer(int udpPort, String string)
     {
         BankServer server = new BankServer(udpPort, string);
+        StatusChanger statusChecker = new StatusChanger(server);
+        Thread t = new Thread(statusChecker);
+        t.start();
         m_serverList.add(server);
     }
 
