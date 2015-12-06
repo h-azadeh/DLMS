@@ -82,7 +82,6 @@ public class MulticastReceiver implements Runnable
 				DatagramPacket msgPacket = new DatagramPacket(receiveData,
 						receiveData.length);
 				clientSocket.receive(msgPacket);
-				System.out.println("Multicast received");
 				processIncomingPacket(msgPacket);
 			}
 		} catch (IOException | ClassNotFoundException e)
