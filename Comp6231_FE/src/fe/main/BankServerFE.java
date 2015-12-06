@@ -99,6 +99,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 			int udpPort = Configuration.FE_PORT;
 
 			bSocket = new DatagramSocket(udpPort);
+			bSocket.setReuseAddress(true);
 			// buffer size needs to be bigger, because the UDPProtocol object is
 			// fairly big, I've seen some can use array size up to 1100,
 			// increased to 2048 to avoid truncation of the packets

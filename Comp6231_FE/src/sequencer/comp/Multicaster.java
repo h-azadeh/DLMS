@@ -40,6 +40,7 @@ public class Multicaster
 						try
 						{
 							DatagramSocket serverSocket = new DatagramSocket();
+							serverSocket.setReuseAddress(true);
 							address = InetAddress.getByName(Configuration.MULTI_CAST_GROUP_IPS[currentIndex]);
 						
 							DatagramPacket packet = new DatagramPacket(data, data.length, address,

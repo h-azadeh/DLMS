@@ -21,6 +21,7 @@ public class UDPSender
 			throws IOException
 	{
 		DatagramSocket Socket = new DatagramSocket();
+		Socket.setReuseAddress(true);
 		InetAddress IPAddress = InetAddress.getByName(host);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ObjectOutputStream os = new ObjectOutputStream(outputStream);

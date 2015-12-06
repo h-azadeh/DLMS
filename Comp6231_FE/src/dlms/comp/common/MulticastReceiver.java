@@ -74,7 +74,7 @@ public class MulticastReceiver implements Runnable
 		try
 		{
 			DatagramSocket clientSocket = new DatagramSocket(listeningPort);
-
+			clientSocket.setReuseAddress(true);
 			while (true)
 			{
 				byte[] receiveData = new byte[2048];

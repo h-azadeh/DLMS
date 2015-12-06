@@ -72,6 +72,7 @@ public class UDPListener implements Runnable
         try
         {
             serverSocket = new DatagramSocket(listeningPort);
+            serverSocket.setReuseAddress(true);
         } catch (SocketException e1)
         {
             e1.printStackTrace();

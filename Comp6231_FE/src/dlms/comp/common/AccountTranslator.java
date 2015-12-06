@@ -8,29 +8,31 @@ public class AccountTranslator
 {
 	public static User convertFromMiladToSai(Account account, String bank)
 	{
-		User user = new User(Integer.toString(account.getAccountNumber()), account.getFirstName(),
-				account.getLastName(), account.getPhoneNumber(), account.getEmail(),
-				account.getPassword(), account.getCreditLimit(), account.getUserName()
-						.equalsIgnoreCase("manager"), bank);
+		User user = new User(Integer.toString(account.getAccountNumber()),
+				account.getFirstName(), account.getLastName(),
+				account.getPhoneNumber(), account.getEmail(),
+				account.getPassword(), account.getCreditLimit(),
+				account.getUserName().equalsIgnoreCase("manager"), bank);
 		return user;
 	}
 
-	/*
-	 * What do you use as user name @Azadeh 
-	 * public static User
-	 * convertFromAzadehToSai(CustomerAccount account, String bank) { User user
-	 * = new User(account.GetAccNumber(), account.GetFirstName(),
-	 * account.GetLastName(), account.GetPhoneNumber(),
-	 * account.GetEmailAddress(), account.GetPassword(),
-	 * account.GetCreditLimit(),
-	 * account.getUserName().equalsIgnoreCase("manager"), bank); return user; }
-	 */
+	public static User convertFromAzadehToSai(CustomerAccount account,
+			String bank)
+	{
+		User user = new User(account.GetAccNumber(), account.GetFirstName(),
+				account.GetLastName(), account.GetPhoneNumber(),
+				account.GetEmailAddress(), account.GetPassword(),
+				account.GetCreditLimit(),
+				account.GetFirstName().equalsIgnoreCase("manager"), bank);
+		return user;
+	}
 
 	public static Account convertFromSaiToMilad(User account)
 	{
-		Account user = new Account(Integer.parseInt(account.getAccount()), account.getFirstName(),
-				account.getLastName(), account.getEmail(), account.getPhone(),
-				account.getPassword(), (int) account.getCreditLimit(), account.getUsr());
+		Account user = new Account(Integer.parseInt(account.getAccount()),
+				account.getFirstName(), account.getLastName(),
+				account.getEmail(), account.getPhone(), account.getPassword(),
+				(int) account.getCreditLimit(), account.getUsr());
 
 		return user;
 	}
@@ -61,13 +63,14 @@ public class AccountTranslator
 		return user;
 	}
 
-/*	What do you use as user name @Azadeh 
- * public static Account convertFromAzadehToMilad(CustomerAccount account)
+	public static Account convertFromAzadehToMilad(CustomerAccount account)
 	{
-		Account user = new Account(Integer.parseInt(account.GetAccNumber()), account.GetFirstName(),
-				account.GetLastName(), account.GetEmailAddress(), account.GetPhoneNumber(),
-				account.GetPassword(), (long) account.GetCreditLimit(), account.getUsr());
+		Account user = new Account(Integer.parseInt(account.GetAccNumber()),
+				account.GetFirstName(), account.GetLastName(),
+				account.GetEmailAddress(), account.GetPhoneNumber(),
+				account.GetPassword(), (int) account.GetCreditLimit(),
+				account.GetFirstName());
 
 		return user;
-	}*/
+	}
 }

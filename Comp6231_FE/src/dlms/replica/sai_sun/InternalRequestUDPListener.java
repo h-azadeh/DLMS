@@ -80,6 +80,7 @@ public class InternalRequestUDPListener implements Runnable
 		try
 		{
 			serverSocket = new DatagramSocket(m_listeningPort);
+			serverSocket.setReuseAddress(true);
 		} catch (SocketException e1)
 		{
 			e1.printStackTrace();
