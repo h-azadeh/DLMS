@@ -2,6 +2,13 @@ package dlms.replica.milad;
 
 import java.util.Date;
 
+/**
+ * Bank Loan Class
+ * 
+ * @author Milad
+ *
+ */
+
 public class Loan  {
     private Integer accountNumber;
     private Integer loanID;

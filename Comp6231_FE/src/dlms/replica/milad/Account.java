@@ -1,5 +1,12 @@
 package dlms.replica.milad;
 
+/**
+ * Bank Account Class
+ * 
+ * @author Milad
+ *
+ */
+
 public class Account  {
     private Integer accountNumber;
     private String firstName;
