@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 
+
 /** 
  * The implementation of Bank server  
  */
@@ -591,12 +592,19 @@ public class BankServer extends Thread{
 		serverOutputBuffer.flush();
 		
 		returnList = new String[customerCounter];
+		ArrayList<String> list = new ArrayList<String>();
 		for(int q=0;q<customerCounter;q++)
 		{
-			returnList[q] = CustomersList.get(q).toString();
-			
+			//returnList[q] = CustomersList.get(q).toString();
+			list.add(CustomersList.get(q).GetFirstName());
+			list.add(CustomersList.get(q).GetLastName());
+			list.add(CustomersList.get(q).GetEmailAddress());
+			list.add(CustomersList.get(q).GetPhoneNumber());			
+			list = toLoanString(list, CustomersList.get(q).GetcustomerLoansList());
+			list.add("\n");			
 		}
-		return returnList;
+		//return returnList;
+		return list.toArray(new String[list.size()]);
 	}
 	
 	
@@ -936,5 +944,16 @@ public class BankServer extends Thread{
 		return account;
 	}
 	
+	public ArrayList<String> toLoanString(ArrayList<String> list, List<Loan> loans)
+	{
+		for (Loan l : loans)
+		{
+			list.add(l.GetDueDate().toString());
+			list.add(Double.toString(l.GetAmount()));
+			list.add(Integer.toString(l.GetLoanId()));
+		}
+
+		return list;
+	}
 
 }
