@@ -20,6 +20,7 @@ public class Replica implements UDPNotifierIF{
     private MulticastReceiver multicastReceiver = null;
     // multicast receiver thread
     private Thread multicastReceiverThread;
+    private static int counter =0;
 	/**
 	 * @param args
 	 */
@@ -65,6 +66,19 @@ public class Replica implements UDPNotifierIF{
         BankServer server;
 		try {
 			server = new BankServer(string);
+			StatusChanger statusChecker = new StatusChanger(server);
+			Thread t = new Thread(statusChecker);
+			t.start();
+			DataUpdater updater = new DataUpdater(server,
+					Configuration.UPDATER_PORT_POOL[counter],
+					9167+ counter,
+					Integer.toString(9281+counter),
+					9360+counter,
+					Configuration.UDP_FE_ANOTHER_IP_1,
+					Configuration.UDP_FE_ANOTHER_IP_2);
+			Thread t1 = new Thread(updater);
+			t1.start();
+			counter++;
 			m_serverList.add(server);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

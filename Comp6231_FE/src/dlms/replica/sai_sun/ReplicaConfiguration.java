@@ -38,4 +38,12 @@ public class ReplicaConfiguration
 
     public final static String[] SERVER_CUSTOMER_DATA =
     { BANK1_CUSTOMER_DATA, BANK2_CUSTOMER_DATA, BANK3_CUSTOMER_DATA };
+    
+	public static final Integer UDP_SERVER_NOTIFY_1 = 9770;
+	public static final Integer UDP_SERVER_NOTIFY_2 = 9771;
+	public static final Integer UDP_SERVER_NOTIFY_3 = 9772;
+	public final static int[] UPDATER_PORT_POOL = {UDP_SERVER_NOTIFY_1,UDP_SERVER_NOTIFY_2,UDP_SERVER_NOTIFY_3};
+
+	public static final String UDP_FE_ANOTHER_IP_1 = "mechoopda";
+	public static final String UDP_FE_ANOTHER_IP_2 = "menominee";
 }

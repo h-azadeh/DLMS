@@ -156,10 +156,6 @@ public class MulticastReceiver implements Runnable
 			// then move it to multicastedList and processedList
 			if (!receivedList.isEmpty())
 			{
-				if(notifyIf.pauseTimer())
-				{
-					return;
-				}
 				UDPProtocol message = receivedList.get(receivedList.firstKey());
 				receivedList.remove(receivedList.firstKey());
 				// if it's the first message we deliver

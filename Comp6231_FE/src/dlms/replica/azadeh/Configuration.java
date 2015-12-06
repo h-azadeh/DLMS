@@ -42,5 +42,11 @@ public class Configuration {
     { ReplicaConfiguration.SERVER_1_NAME, ReplicaConfiguration.SERVER_2_NAME,
     	ReplicaConfiguration.SERVER_3_NAME };
 
-	
+	public static final Integer UDP_SERVER_NOTIFY_1 = 9770;
+	public static final Integer UDP_SERVER_NOTIFY_2 = 9771;
+	public static final Integer UDP_SERVER_NOTIFY_3 = 9772;
+	public final static int[] UPDATER_PORT_POOL = {UDP_SERVER_NOTIFY_1,UDP_SERVER_NOTIFY_2,UDP_SERVER_NOTIFY_3};
+
+	public static final String UDP_FE_ANOTHER_IP_1 = "mascouten";
+	public static final String UDP_FE_ANOTHER_IP_2 = "menominee";
 }
