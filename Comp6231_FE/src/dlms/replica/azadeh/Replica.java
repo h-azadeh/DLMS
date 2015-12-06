@@ -37,7 +37,7 @@ public class Replica implements UDPNotifierIF{
         m_serverList = new ArrayList<BankServer>();
         for (int i = 0; i < Configuration.BANK_NAME_POOL.length; i++)
         {
-            addServer(Configuration.BANK_NAME_POOL[i]);
+            addServer(Configuration.BANK_NAME_POOL[i]);            
         }
 
         // create multicast receiver

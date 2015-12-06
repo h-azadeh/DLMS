@@ -391,6 +391,8 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 					processReplies(currentRequestId);
 				}
 			});
+			
+			replyController.start();
 
 			return currentRequestId;
 		} catch (IOException e)
@@ -420,17 +422,18 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 				if (repliesMap.containsKey(key))
 				{
 					replies = repliesMap.get(key);
-
+					
 					if (replies.size() == 3)
 					{
-						if (replies.get(0).getResult() == replies.get(1).getResult()
-								&& replies.get(1).getResult() == replies.get(2).getResult())
+						System.out.println("3 replies received!");
+						if (replies.get(0).getResult().equals(replies.get(1).getResult())
+								&& replies.get(1).getResult().equals(replies.get(2).getResult()))
 							validatedRepliesMap.put(key, replies.get(1).getResult());
-						else if (replies.get(0).getResult() == replies.get(1).getResult())
+						else if (replies.get(0).getResult().equals(replies.get(1).getResult()))
 						{
 							validatedRepliesMap.put(key, replies.get(1).getResult());
 							notifyReplicasOfBug(replies.get(2).getResultSender());
-						} else if (replies.get(0).getResult() == replies.get(2).getResult())
+						} else if (replies.get(0).getResult().equals(replies.get(2).getResult()))
 						{
 							validatedRepliesMap.put(key, replies.get(0).getResult());
 							notifyReplicasOfBug(replies.get(1).getResultSender());
@@ -443,10 +446,10 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 						waitingForReplies = false;
 					} else if (replies.size() == 2 && slowestReplyTimeSet == false)
 					{
-
+						System.out.println("2 replies received!");
 						// compare 2 replies, if identical: add reply to
 						// approvedRepliesMap
-						if (replies.get(0).getResult() == replies.get(1).getResult())
+						if (replies.get(0).getResult().equals(replies.get(1).getResult()))
 						{
 							validatedRepliesMap.put(key, replies.get(1).getResult());
 						}
@@ -463,6 +466,11 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 							notifyReplicasOfCrash(replies.get(0).getResultSender(), replies.get(1)
 									.getResultSender());
 						}
+					}
+					else if(replies.size() == 1)
+					{
+						System.out.println(replies.get(0).getResultSender());
+						
 					}
 				}
 			}

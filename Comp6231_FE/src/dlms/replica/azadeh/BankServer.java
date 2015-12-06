@@ -42,13 +42,18 @@ public class BankServer extends Thread{
 	
 	//private String transferResultMessge = "";
 	private boolean transferResultMessge = false;
-		
+	
+	private int accountCounter;
+	
 	public BankServer(String name) throws IOException
 	{
+		System.out.println("starting " + name);
+		
 		serverName = name;
 		accountsMap = Collections.synchronizedMap( new HashMap<String, List<CustomerAccount>>());
 		loansMap = Collections.synchronizedMap( new HashMap<String, List<Loan>>());
 		maxLoanId = 0;
+		accountCounter = 0;
 		
 		filePath = Configuration.FILE_PATH;
 		String fileName = filePath + name + ".txt";
@@ -314,8 +319,11 @@ public class BankServer extends Thread{
 			//Account number format: 3 first letters of first name + 3 first letter of last name + Bank name + [random number]
 			Date operationDate = new Date();
 			
-			String newAccNumber = account.GetFirstName().substring(0, 2).concat(account.GetLastName().substring(0, 2));
-			newAccNumber = newAccNumber.concat(serverName);
+			//String newAccNumber = account.GetFirstName().substring(0, 2).concat(account.GetLastName().substring(0, 2));
+			accountCounter++;
+			int accountNumberInt = accountCounter;
+			String newAccNumber = Integer.toString(accountNumberInt);
+			//newAccNumber = newAccNumber.concat(serverName);
 			
 			String mapKey = account.GetFirstName().substring(0, 1);				
 			
