@@ -154,7 +154,7 @@ public class Replica implements UDPNotifierIF{
                     .getLastNmae(), message.getClientRequest().getEmail(), message
                     .getClientRequest().getPhoneNum(), message.getClientRequest().getPassWord(),
                     message.getFeHeader().getBankId());
-            reply = new ReplicaReplyContent(ret, "replica2");
+            reply = new ReplicaReplyContent(ret, dlms.comp.common.Configuration.Replica2_Name);
             message.setReplicaReply(reply);
             try
             {
@@ -171,7 +171,7 @@ public class Replica implements UDPNotifierIF{
             ret = getLoan(Integer.toString(message.getClientRequest().getAccountId()), message
                     .getClientRequest().getPassWord(), message.getClientRequest().getLoanAmount(),
                     message.getFeHeader().getBankId());
-            reply = new ReplicaReplyContent(ret, "replica2");
+            reply = new ReplicaReplyContent(ret, dlms.comp.common.Configuration.Replica2_Name);
             message.setReplicaReply(reply);
             try
             {
@@ -186,7 +186,7 @@ public class Replica implements UDPNotifierIF{
             ret = delayPayment(Integer.toString(message.getClientRequest().getLoanId()), message
                     .getClientRequest().getCurrentDueDate(), message.getClientRequest()
                     .getNewDueDate(), message.getFeHeader().getBankId());
-            reply = new ReplicaReplyContent(ret, "replica2");
+            reply = new ReplicaReplyContent(ret, dlms.comp.common.Configuration.Replica2_Name);
             message.setReplicaReply(reply);
             try
             {
@@ -199,7 +199,7 @@ public class Replica implements UDPNotifierIF{
             break;
         case PRINT_INFO:
             ret = printCustomerInfo(message.getFeHeader().getBankId());
-            reply = new ReplicaReplyContent(ret, "replica2");
+            reply = new ReplicaReplyContent(ret, dlms.comp.common.Configuration.Replica2_Name);
             message.setReplicaReply(reply);
             try
             {
@@ -214,7 +214,7 @@ public class Replica implements UDPNotifierIF{
             ret = transferLoan(Integer.toString(message.getClientRequest().getLoanId()), message
                     .getClientRequest().getCurrentBank(),
                     message.getClientRequest().getOtherBank(), message.getFeHeader().getBankId());
-            reply = new ReplicaReplyContent(ret, "replica2");
+            reply = new ReplicaReplyContent(ret, dlms.comp.common.Configuration.Replica2_Name);
             message.setReplicaReply(reply);
             try
             {
