@@ -1,4 +1,4 @@
-package dlms.replica.milad;
+package dlms.replica.sai_sun;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -15,10 +15,10 @@ import java.net.SocketException;
 public class UpdaterReplicas implements Runnable{
 	
 	private Integer receiveingPort;
-	private RemoteBankImpl myBankImpl;
+	private BankServer myBankImpl;
 	private String anotherReplica1, anotherReplica2;
 	
-	public UpdaterReplicas(RemoteBankImpl aBankImpl, int aReceivingPort, String anotherReplica1, String anotherReplica2){
+	public UpdaterReplicas(BankServer aBankImpl, int aReceivingPort, String anotherReplica1, String anotherReplica2){
 		this.receiveingPort = aReceivingPort;
 		this.myBankImpl = aBankImpl;
 		this.anotherReplica1 = anotherReplica1;

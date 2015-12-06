@@ -409,7 +409,7 @@ public class CustomerList
 	 * 
 	 * @param user
 	 */
-	private void addUserToMap(User user)
+	public void addUserToMap(User user)
 	{
 		if (m_map.containsKey(user.getUsr().substring(0, 1).toUpperCase()))
 		{
@@ -490,6 +490,29 @@ public class CustomerList
 			for (User u : m_map.get(key))
 			{
 				if (u.getAccount().equals(id) && u.isCorrectPassword(psw))
+				{
+					return u;
+				}
+			}
+		}
+		return ret;
+	}
+	
+	/**
+	 * Get user object from the hashmap by account id
+	 * 
+	 * @param id
+	 * @param psw
+	 * @return
+	 */
+	public User getUserByAccountIdNoPassword(String id)
+	{
+		User ret = null;
+		for (String key : m_map.keySet())
+		{
+			for (User u : m_map.get(key))
+			{
+				if (u.getAccount().equals(id))
 				{
 					return u;
 				}
@@ -670,5 +693,22 @@ public class CustomerList
 			}
 		}
 		return false;
+	}
+	
+	public void resetMap()
+	{
+		m_map.clear();
+	}
+	
+	public void addLoanToUser(Loan loan)
+	{
+		User user = getUserByAccountIdNoPassword(loan.getAccount());
+		user.addLoan(loan);
+		updateUser(user);
+	}
+	
+	public HashMap<String, ArrayList<User>> getHashMap()
+	{
+		return m_map;
 	}
 }

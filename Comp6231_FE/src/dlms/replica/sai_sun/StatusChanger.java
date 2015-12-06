@@ -1,10 +1,10 @@
-package dlms.replica.milad;
+package dlms.replica.sai_sun;
 
 public class StatusChanger implements Runnable{
 	
-	RemoteBankImpl myBankImpl;
+	BankServer myBankImpl;
 
-	public StatusChanger(RemoteBankImpl thisBankServer){
+	public StatusChanger(BankServer thisBankServer){
 		myBankImpl = thisBankServer;
 	}
 	

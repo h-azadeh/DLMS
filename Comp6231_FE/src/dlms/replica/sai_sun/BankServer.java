@@ -2,12 +2,18 @@ package dlms.replica.sai_sun;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import dlms.comp.common.AccountTranslator;
+import dlms.comp.common.LoanTranslator;
 import dlms.comp.common.MulticastReceiver;
 import dlms.comp.common.protocol.UDPProtocol;
 import dlms.comp.udp.util.UDPNotifierIF;
+import dlms.replica.milad.Account;
 import dlms.replica.sai_sun.ReplicaConfiguration.messageType;
 
 /**
@@ -37,6 +43,9 @@ public class BankServer
 	private CountDownLatch m_loanTransferLock;
 	private String lastRemovedLoanId = "";
 	private User oldUserData = null;
+	public Integer weMustStop = 0;
+	public Integer isProcessing = 0;
+	public String myBuddyIP = "";
 
 	/**
 	 * Constructor , initialize data structures
@@ -591,5 +600,60 @@ public class BankServer
 			}
 		}
 		m_customerList.writeAllCustomerInfoToFiles();
+	}
+	
+	public void setCustomerList(Map<Character, List<Account>> accountMap,  Map<Character, List<dlms.replica.milad.Loan>> loanMap)
+	{
+		m_customerList.resetMap();
+		//add users
+		for(Character c : accountMap.keySet())
+		{
+			for(Account acc : accountMap.get(c))
+			{
+				m_customerList.addUserToMap(AccountTranslator.convertFromMiladToSai(acc, m_name));
+			}
+		}
+		
+		//add loans
+		for(Character c : loanMap.keySet())
+		{
+			for(dlms.replica.milad.Loan loan : loanMap.get(c))
+			{
+				m_customerList.addLoanToUser(LoanTranslator.convertFromMiladToSai(loan));
+			}
+		}
+	}
+	
+	public Map<Character, List<Account>> getAccountList()
+	{
+		Map<Character, List<Account>> list = new HashMap<Character, List<Account>>();
+		for(String key: m_customerList.getHashMap().keySet())
+		{
+			List<Account> accountList = new ArrayList<Account>();
+			for(User u : m_customerList.getHashMap().get(key))
+			{
+				accountList.add(AccountTranslator.convertFromSaiToMilad(u));
+			}
+			list.put(key.charAt(0), accountList);
+		}
+		return list;
+	}
+	
+	public Map<Character, List<dlms.replica.milad.Loan>> getLoanList()
+	{
+		Map<Character, List<dlms.replica.milad.Loan>> list = new HashMap<Character, List<dlms.replica.milad.Loan>>();
+		for(String key: m_customerList.getHashMap().keySet())
+		{
+			List<dlms.replica.milad.Loan> loanList = new ArrayList<dlms.replica.milad.Loan>();
+			for(User u : m_customerList.getHashMap().get(key))
+			{
+				for(Loan l : u.getLoanList())
+				{
+					loanList.add(LoanTranslator.convertFromSaiToMilad(l));
+				}
+			}
+			list.put(key.charAt(0), loanList);
+		}
+		return list;
 	}
 }

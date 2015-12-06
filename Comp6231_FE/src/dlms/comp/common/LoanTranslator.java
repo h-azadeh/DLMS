@@ -47,7 +47,7 @@ public class LoanTranslator
 		return ret;
 	}
 
-	public static dlms.replica.milad.Loan convertFromAzadehToMilad(dlms.replica.sai_sun.Loan loan)
+	public static dlms.replica.milad.Loan convertFromSaiToMilad(dlms.replica.sai_sun.Loan loan)
 	{
 		dlms.replica.milad.Loan ret = new dlms.replica.milad.Loan(Integer.parseInt(loan
 				.getAccount()), Integer.parseInt(loan.getId()), (int) loan.getAmount(),

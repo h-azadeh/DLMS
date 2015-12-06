@@ -1,4 +1,4 @@
-package dlms.replica.milad;
+package dlms.replica.sai_sun;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -17,8 +17,8 @@ public class UDPupdateNotifier implements Runnable{
 	
 	private Integer thisport, repPort;
 	private String rep1IP, rep2IP, thisPortReceive;
-	private RemoteBankImpl myBankImpl;
-	public UDPupdateNotifier(RemoteBankImpl thisBankImpl, int thisPortNotify,String thisPortReceive, String rep1IP, String rep2IP, int repPort) {
+	private BankServer myBankImpl;
+	public UDPupdateNotifier(BankServer thisBankImpl, int thisPortNotify,String thisPortReceive, String rep1IP, String rep2IP, int repPort) {
 	    this.myBankImpl = thisBankImpl;
 		this.thisport = thisPortNotify;
 	    this.rep1IP = rep1IP; //another replica IP1
