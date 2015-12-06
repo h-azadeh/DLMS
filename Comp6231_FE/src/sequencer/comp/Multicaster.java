@@ -32,6 +32,7 @@ public class Multicaster
 			final byte[] data = outputStream.toByteArray();
 			for(int i = 0; i < Configuration.MULTI_CAST_GROUP_IPS.length; i++)
 			{
+				final int currentIndex = i;
 				Thread t = new Thread(new Runnable() {
 
 				      public void run() {
@@ -39,10 +40,10 @@ public class Multicaster
 						try
 						{
 							DatagramSocket serverSocket = new DatagramSocket();
-							address = InetAddress.getByName(Configuration.MULTI_CAST_INET_ADDR);
+							address = InetAddress.getByName(Configuration.MULTI_CAST_GROUP_IPS[currentIndex]);
 						
 							DatagramPacket packet = new DatagramPacket(data, data.length, address,
-									Configuration.MULTI_CAST_INET_PORT);
+									Configuration.MULTI_CAST_GROUP_PORTS[currentIndex]);
 							serverSocket.send(packet);
 							serverSocket.close();
 						} catch (IOException e)
