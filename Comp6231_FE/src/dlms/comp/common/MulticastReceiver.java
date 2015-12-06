@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.NetworkInterface;
@@ -48,8 +49,7 @@ public class MulticastReceiver implements Runnable
 	 */
 	public MulticastReceiver(UDPNotifierIF interf)
 	{
-		multicastGroupIp = Configuration.MULTI_CAST_INET_ADDR;
-		listeningPort = Configuration.MULTI_CAST_INET_PORT;
+		listeningPort = Configuration.MULTI_CAST_GROUP_PORTS[0];
 		notifyIf = interf;
 		// Guarantees that the content will be sorted by UUID
 		receivedList = new TreeMap<Integer, UDPProtocol>();
@@ -70,12 +70,10 @@ public class MulticastReceiver implements Runnable
 	@Override
 	public void run()
 	{
-		MulticastSocket clientSocket;
+		
 		try
 		{
-			// join multicast group and start listening
-			clientSocket = new MulticastSocket(listeningPort);
-			clientSocket.joinGroup(InetAddress.getByName(multicastGroupIp));
+			DatagramSocket clientSocket = new DatagramSocket(listeningPort);
 
 			while (true)
 			{

@@ -16,4 +16,6 @@ public class Configuration
 	public final static int MULTI_CAST_INET_PORT = 9966;
 	public final static int SEQUENCER_PORT = 9999;
 	public final static String LOCAL_HOST_NAME = "mascouten";
+	public final static String[] MULTI_CAST_GROUP_IPS= {"localhost", "localhost", "localhost"};
+	public final static int[] MULTI_CAST_GROUP_PORTS= {11001, 11002, 11003};
 }
