@@ -39,7 +39,10 @@ public class BankServer extends Thread{
 	private String filePath;
 	
 	private double loanAmount1 = 0;
-	private double loanAmount2 = 0;		
+	private double loanAmount2 = 0;	
+	public Integer weMustStop = 0;
+	public Integer isProcessing = 0;
+	public String myBuddyIP = "";
 	
 	//private String transferResultMessge = "";
 	private boolean transferResultMessge = false;

@@ -259,4 +259,10 @@ public class Replica implements UDPNotifierIF
             break;
         }
     }
+
+	@Override
+	public boolean pauseTimer()
+	{
+		return m_serverList.get(0).weMustStop == 1;
+	}
 }

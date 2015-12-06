@@ -126,4 +126,11 @@ public class Sequencer implements UDPNotifierIF, Runnable, QueueManagementIF
     {
         sentList.put(message.getSequencerHeader().getUUID(), message);
     }
+
+	@Override
+	public boolean pauseTimer()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

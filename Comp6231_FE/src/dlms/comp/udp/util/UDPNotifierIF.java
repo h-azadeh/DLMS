@@ -9,4 +9,5 @@ import dlms.comp.common.protocol.UDPProtocol;
 public interface UDPNotifierIF
 {
 public void notifyMessage(UDPProtocol message);
+public boolean pauseTimer();
 }
