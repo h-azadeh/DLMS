@@ -10,6 +10,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -271,13 +272,20 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 
 			reply = (String[]) validatedRepliesMap.get(requestIdStr);	
 			
+			
 			for(int i=0; i<100; i++)
+			{					
+				finalReply[i] = "";				
+			}			
+			
+			for(int i=0; i<reply.length; i++)
 			{
 				if(reply[i] == null)
 					finalReply[i] = "";
 				else 
 					finalReply[i] = reply[i];
-			}
+				}
+		
 
 		} catch (Exception e)
 		{
@@ -411,6 +419,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 		long slowestReplyTime = 0;
 		boolean waitingForReplies = true;
 		boolean slowestReplyTimeSet = false;
+		boolean firstReplyPrinted = false;
 
 		try
 		{
@@ -426,34 +435,78 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 					if (replies.size() == 3)
 					{
 						System.out.println("3 replies received!");
-						if (replies.get(0).getResult().equals(replies.get(1).getResult())
-								&& replies.get(1).getResult().equals(replies.get(2).getResult()))
-							validatedRepliesMap.put(key, replies.get(1).getResult());
-						else if (replies.get(0).getResult().equals(replies.get(1).getResult()))
+						System.out.println(replies.get(0).getResult());
+						System.out.println(replies.get(1).getResult());					
+						System.out.println(replies.get(2).getResult());
+						
+						Class<? extends Object> target = replies.get(0).getResult().getClass();
+						if(target.isArray())
 						{
-							validatedRepliesMap.put(key, replies.get(1).getResult());
-							notifyReplicasOfBug(replies.get(2).getResultSender());
-						} else if (replies.get(0).getResult().equals(replies.get(2).getResult()))
-						{
-							validatedRepliesMap.put(key, replies.get(0).getResult());
-							notifyReplicasOfBug(replies.get(1).getResultSender());
-						} else
-						// if(replies.get(1).getResult()==replies.get(2).getResult())
-						{
-							validatedRepliesMap.put(key, replies.get(1).getResult());
-							notifyReplicasOfBug(replies.get(0).getResultSender());
+							if(Arrays.equals((String[])replies.get(0).getResult(), (String[])replies.get(1).getResult()) && Arrays.equals((String[])replies.get(0).getResult(), (String[])replies.get(2).getResult()))
+							{
+								validatedRepliesMap.put(key, replies.get(1).getResult());
+							}
+							else if(Arrays.equals((String[])replies.get(0).getResult(), (String[])replies.get(1).getResult()))
+							{
+								validatedRepliesMap.put(key, replies.get(1).getResult());
+								notifyReplicasOfBug(replies.get(2).getResultSender());
+							}
+							else if(Arrays.equals((String[])replies.get(0).getResult(), (String[])replies.get(2).getResult()))
+							{
+								validatedRepliesMap.put(key, replies.get(0).getResult());
+								notifyReplicasOfBug(replies.get(1).getResultSender());
+							}
+							else if(Arrays.equals((String[])replies.get(1).getResult(), (String[])replies.get(2).getResult()))
+							{
+								validatedRepliesMap.put(key, replies.get(1).getResult());
+								notifyReplicasOfBug(replies.get(0).getResultSender());
+							}
 						}
+						else
+						{
+							if (replies.get(0).getResult().equals(replies.get(1).getResult())
+									&& replies.get(1).getResult().equals(replies.get(2).getResult()))
+								validatedRepliesMap.put(key, replies.get(1).getResult());
+							else if (replies.get(0).getResult().equals(replies.get(1).getResult()))
+							{
+								validatedRepliesMap.put(key, replies.get(1).getResult());
+								notifyReplicasOfBug(replies.get(2).getResultSender());
+							} else if (replies.get(0).getResult().equals(replies.get(2).getResult()))
+							{
+								validatedRepliesMap.put(key, replies.get(0).getResult());
+								notifyReplicasOfBug(replies.get(1).getResultSender());
+							} else if(replies.get(1).getResult()==replies.get(2).getResult())
+							{
+								validatedRepliesMap.put(key, replies.get(1).getResult());
+								notifyReplicasOfBug(replies.get(0).getResultSender());
+							}
+						}
+						
 						waitingForReplies = false;
 					} else if (replies.size() == 2 && slowestReplyTimeSet == false)
 					{
-						System.out.println("2 replies received!");
+						/*System.out.println("2 replies received!");
+						System.out.println(replies.get(0).getResult());
+						System.out.println(replies.get(1).getResult());*/
+						
 						// compare 2 replies, if identical: add reply to
 						// approvedRepliesMap
-						if (replies.get(0).getResult().equals(replies.get(1).getResult()))
+						Class<? extends Object> targetClass = replies.get(0).getResult().getClass();
+						if(targetClass.isArray())
 						{
-							validatedRepliesMap.put(key, replies.get(1).getResult());
+							if (Arrays.equals((String[])replies.get(0).getResult(), (String[])replies.get(1).getResult()))
+							{
+								validatedRepliesMap.put(key, replies.get(1).getResult());								
+							} 
 						}
-						slowestReplyTime = (System.currentTimeMillis() - startTime) * 2;
+						else
+						{
+							if (replies.get(0).getResult().equals(replies.get(1).getResult()))
+							{
+								validatedRepliesMap.put(key, replies.get(1).getResult());
+							}
+						}						
+						slowestReplyTime = (System.currentTimeMillis() - startTime) * 20 + 10;
 						slowestReplyTimeSet = true;
 					} else if (slowestReplyTimeSet == true)
 					{
@@ -467,9 +520,11 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 									.getResultSender());
 						}
 					}
-					else if(replies.size() == 1)
+					else if(replies.size() == 1 && firstReplyPrinted==false)
 					{
 						System.out.println(replies.get(0).getResultSender());
+						System.out.println(replies.get(0).getResult());
+						firstReplyPrinted = true;
 						
 					}
 				}
@@ -519,7 +574,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 
 	private void notifyReplicasOfCrash(String replica1, String replica2)
 	{
-System.out.println("Notify replicas " + replica1 + " and " + replica2 + " of possible crash of the other replica.");
+		System.out.println("Notify " + replica1 + " and " + replica2 + " of possible crash of the other replica.");
 		
 		String msg = "";		
 		

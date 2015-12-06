@@ -134,7 +134,8 @@ public class Replica implements UDPNotifierIF{
     public boolean transferLoan(String LoanID, String CurrentBank, String OtherBank, int bankId)
     {
     	int intLoanID = Integer.parseInt(LoanID);
-        return getServerByName(CurrentBank).transferLoan(intLoanID, CurrentBank, OtherBank);
+        //return getServerByName(CurrentBank).transferLoan(intLoanID, CurrentBank, OtherBank);
+    	return getServerById(bankId).transferLoan(intLoanID, CurrentBank, OtherBank);
     }
 
     /**

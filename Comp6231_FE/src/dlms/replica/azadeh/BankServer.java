@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 
+
 /** 
  * The implementation of Bank server  
  */
@@ -300,9 +301,7 @@ public class BankServer extends Thread{
 			if(bSocket != null) bSocket.close();
 		}
 	}
-	
-	
-	
+		
 	public String openAccount(String firstName, String lastName, String emailAdd, String pw, String phoneNumber)
 	{		
 		try
@@ -339,7 +338,8 @@ public class BankServer extends Thread{
 						if(matchlist.get(i).GetFirstName().equals(account.GetFirstName()) && matchlist.get(i).GetLastName().equals(account.GetLastName()))				
 						{
 							serverOutputBuffer.println(operationDate + ":" + "An account already exists for " + account.GetFirstName() + account.GetLastName());
-							return Configuration.ACCOUNT_EXISTS + " " + matchlist.get(i).GetAccNumber();
+							//return Configuration.ACCOUNT_EXISTS + " " + matchlist.get(i).GetAccNumber();
+							return Configuration.ACCOUNT_EXISTS;
 						}
 					}	
 				}										
@@ -560,6 +560,8 @@ public class BankServer extends Thread{
 			        	List<Loan> keyLoansList = loansMap.get(accountMapKey);
 			        	if(keyLoansList != null)
 			        	{
+			        		serverOutputBuffer.println("Adding account loans...");
+			        		serverOutputBuffer.flush();
 			        		for(int k=0; k < keyLoansList.size() ; k++)
 			        		{
 			        			if(keyLoansList.get(k).GetAccNumber().equals(curAccNumber))
@@ -568,13 +570,13 @@ public class BankServer extends Thread{
 			        			}
 			        		}
 			        		
-			        		accountsList.get(i).SetcustomerLoansList(curAccountLoansList);
-			        		CustomersList.add(accountsList.get(i));				        					        	
+			        		accountsList.get(i).SetcustomerLoansList(curAccountLoansList);			        						        					        	
 			        	}			        				        	
+			        	CustomersList.add(accountsList.get(i));
 			        }		
 		        	
-		        	allAccountsInfo.remove(accountMapKey);
-		        	allAccountsInfo.put(accountMapKey, accountsList);
+		        	//allAccountsInfo.remove(accountMapKey);
+		        	//allAccountsInfo.put(accountMapKey, accountsList);
 		        }		           	       	              
 		        
 		        accountIterator.remove(); // avoids a ConcurrentModificationException
@@ -590,12 +592,19 @@ public class BankServer extends Thread{
 		serverOutputBuffer.flush();
 		
 		returnList = new String[customerCounter];
-		for(int q=0;q<=customerCounter;q++)
+		ArrayList<String> list = new ArrayList<String>();
+		for(int q=0;q<customerCounter;q++)
 		{
-			returnList[q] = CustomersList.get(q).toString();
-			
+			//returnList[q] = CustomersList.get(q).toString();
+			list.add(CustomersList.get(q).GetFirstName());
+			list.add(CustomersList.get(q).GetLastName());
+			list.add(CustomersList.get(q).GetEmailAddress());
+			list.add(CustomersList.get(q).GetPhoneNumber());			
+			list = toLoanString(list, CustomersList.get(q).GetcustomerLoansList());
+			list.add("\n");			
 		}
-		return returnList;
+		//return returnList;
+		return list.toArray(new String[list.size()]);
 	}
 	
 	
@@ -935,5 +944,16 @@ public class BankServer extends Thread{
 		return account;
 	}
 	
+	public ArrayList<String> toLoanString(ArrayList<String> list, List<Loan> loans)
+	{
+		for (Loan l : loans)
+		{
+			list.add(l.GetDueDate().toString());
+			list.add(Double.toString(l.GetAmount()));
+			list.add(Integer.toString(l.GetLoanId()));
+		}
+
+		return list;
+	}
 
 }

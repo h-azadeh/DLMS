@@ -19,7 +19,8 @@ public class Configuration {
 	
 	public static final long INITIAL_CREDIT_LIMIT = 500;
 	
-	public static final String ACCOUNT_EXISTS = "Customer already has an account!";
+	//public static final String ACCOUNT_EXISTS = "Customer already has an account!";
+	public static final String ACCOUNT_EXISTS = "000";
 	public static final String FILE_PATH = "LogFiles/";
 	
 	public static final String TransferLoanUdpRequestPrefix = "Trn";
@@ -30,7 +31,7 @@ public class Configuration {
 	
 	public final static String HOST_NAME = "localhost";
 
-    //replica internal communication message types
+    //replica internal communication message types 
     public enum messageType
     {
         RequestLoan, LoanAnswer, Transfer, TransferAnswer, ValidateAdmin, RollBack, Commit;
