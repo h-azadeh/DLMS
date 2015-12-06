@@ -3,6 +3,7 @@ package dlms.replica.sai_sun;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import dlms.comp.common.Configuration;
 import dlms.comp.common.MulticastReceiver;
 import dlms.comp.common.SoftwareBugSimulator;
 import dlms.comp.common.protocol.ReplicaReplyContent;
@@ -41,7 +42,7 @@ public class Replica implements UDPNotifierIF
         }
 
         // create multicast receiver
-        multicastReceiver = new MulticastReceiver(this);
+        multicastReceiver = new MulticastReceiver(this,Configuration.MULTI_CAST_GROUP_PORTS[0]);
         multicastReceiverThread = new Thread(multicastReceiver);
     }
 

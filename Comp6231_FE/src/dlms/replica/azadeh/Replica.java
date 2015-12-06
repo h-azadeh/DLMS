@@ -41,7 +41,7 @@ public class Replica implements UDPNotifierIF{
         }
 
         // create multicast receiver
-        multicastReceiver = new MulticastReceiver(this);
+        multicastReceiver = new MulticastReceiver(this,dlms.comp.common.Configuration.MULTI_CAST_GROUP_PORTS[1]);
         multicastReceiverThread = new Thread(multicastReceiver);
     }		
 	

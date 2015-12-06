@@ -47,9 +47,9 @@ public class MulticastReceiver implements Runnable
 	 * @param interf
 	 *            object which implements UDPNotifierIF, should be replica
 	 */
-	public MulticastReceiver(UDPNotifierIF interf)
+	public MulticastReceiver(UDPNotifierIF interf, int port)
 	{
-		listeningPort = Configuration.MULTI_CAST_GROUP_PORTS[0];
+		listeningPort = port;
 		notifyIf = interf;
 		// Guarantees that the content will be sorted by UUID
 		receivedList = new TreeMap<Integer, UDPProtocol>();
