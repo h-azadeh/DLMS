@@ -18,7 +18,6 @@ import udp.UDPserverNotify;
 public class ReplicaManager {
 
 	public Integer notificationID;
-	public Integer consecutiveID;
 	public Integer mycounterRM;
 	public String myHostIP;
 	public Integer restarterID;
@@ -32,7 +31,7 @@ public class ReplicaManager {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		restartIt = notificationID = consecutiveID = mycounterRM = restarterID = 0;
+		restartIt = notificationID =  mycounterRM = restarterID = 0;
 		StopIt = 0;
 	}
 	
