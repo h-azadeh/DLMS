@@ -32,9 +32,9 @@ public class ReplicaConfiguration
     	ReplicaConfiguration.SERVER_3_NAME };
 
     //initial data in the hashmap for three bank servers
-    public final static String BANK1_CUSTOMER_DATA = "2,sai,sun,514514514,1234,saisun@test.com,200000.0,false\n3,cat,cat,cat,1234,cat,200000.0,false\n4,test1,test1,21321412123,1234,test1,200000.0,false\n1,Manager,Manager,514514514,Manager,manager@bank.com,200000.0,true";
-    public final static String BANK2_CUSTOMER_DATA = "1,Manager,Manager,514514514,Manager,manager@bank.com,200000.0,true";
-    public final static String BANK3_CUSTOMER_DATA = "1,Manager,Manager,514514514,Manager,manager@bank.com,200000.0,true";
+    public final static String BANK1_CUSTOMER_DATA = "";//"2,sai,sun,514514514,1234,saisun@test.com,200000.0,false\n3,cat,cat,cat,1234,cat,200000.0,false\n4,test1,test1,21321412123,1234,test1,200000.0,false\n1,Manager,Manager,514514514,Manager,manager@bank.com,200000.0,true";
+    public final static String BANK2_CUSTOMER_DATA = "";//"1,Manager,Manager,514514514,Manager,manager@bank.com,200000.0,true";
+    public final static String BANK3_CUSTOMER_DATA = "";//"1,Manager,Manager,514514514,Manager,manager@bank.com,200000.0,true";
 
     public final static String[] SERVER_CUSTOMER_DATA =
     { BANK1_CUSTOMER_DATA, BANK2_CUSTOMER_DATA, BANK3_CUSTOMER_DATA };

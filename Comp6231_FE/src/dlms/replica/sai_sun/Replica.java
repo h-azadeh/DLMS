@@ -153,6 +153,7 @@ public class Replica implements UDPNotifierIF
         switch (message.getClientRequest().getRequestType())
         {
         case OPEN_ACCOUNT:
+        	System.out.println("Processing open account");
             ret = openAccount(message.getClientRequest().getFirstName(), message.getClientRequest()
                     .getLastNmae(), message.getClientRequest().getEmail(), message
                     .getClientRequest().getPhoneNum(), message.getClientRequest().getPassWord(),
@@ -175,6 +176,7 @@ public class Replica implements UDPNotifierIF
             break;
 
         case GET_LOAN:
+        	System.out.println("Processing get loan");
             ret = getLoan(Integer.toString(message.getClientRequest().getAccountId()), message
                     .getClientRequest().getPassWord(), message.getClientRequest().getLoanAmount(),
                     message.getFeHeader().getBankId());
@@ -194,6 +196,7 @@ public class Replica implements UDPNotifierIF
             }
             break;
         case DELAY_LOAN:
+        	System.out.println("Processing delay loan");
             ret = delayPayment(Integer.toString(message.getClientRequest().getLoanId()), message
                     .getClientRequest().getCurrentDueDate(), message.getClientRequest()
                     .getNewDueDate(), message.getFeHeader().getBankId());
@@ -213,6 +216,7 @@ public class Replica implements UDPNotifierIF
             }
             break;
         case PRINT_INFO:
+        	System.out.println("Processing print info");
             ret = printCustomerInfo(message.getFeHeader().getBankId());
             if(SoftwareBugSimulator.shouldGenerateWrongMessage())
             {
@@ -230,6 +234,7 @@ public class Replica implements UDPNotifierIF
             }
             break;
         case TRANSFER_LOAN:
+        	System.out.println("Processing transfer loan");
             ret = transferLoan(Integer.toString(message.getClientRequest().getLoanId()), message
                     .getClientRequest().getCurrentBank(),
                     message.getClientRequest().getOtherBank(), message.getFeHeader().getBankId());

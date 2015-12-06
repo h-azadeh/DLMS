@@ -30,6 +30,7 @@ public class SequencerTask extends TimerTask
         UDPProtocol message = managementIF.tryToGetQueueHead();
         if (message != null)
         {
+        	System.out.println("Sequencer is multicasting a message");
             Multicaster.multiCastMessage(message);
             managementIF.moveToSentList(message);
         }

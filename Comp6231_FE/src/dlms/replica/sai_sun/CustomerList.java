@@ -91,6 +91,10 @@ public class CustomerList
 			// this is what the string looks like
 			// 1,Manager,Manager,514514514,Manager,manager@bank.com,200000,true
 			// now process the line
+			if(line.length() == 0)
+			{
+				break;
+			}
 			processInfoString(line);
 			ACCOUNT_COUNTER++;
 		}

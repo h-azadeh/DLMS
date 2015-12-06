@@ -29,5 +29,5 @@ public class Configuration {
 	
 	public static final String FILE_PATH = "LogFiles/";
 	public final static int FE_PORT = 8888;
-	public final static String FE_IP = "localhost";
+	public final static String FE_IP = "mechoopda";
 }
