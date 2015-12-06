@@ -25,7 +25,7 @@ public class Configuration {
 	
 	//public static final String Sequencer host and port		
 	
-	public static final String ACCOUNT_EXISTS = "Customer already has an account!";
+	public static final String ACCOUNT_EXISTS = "000";// "Customer already has an account!";
 	
 	public static final String FILE_PATH = "LogFiles/";
 	public final static int FE_PORT = 8888;
