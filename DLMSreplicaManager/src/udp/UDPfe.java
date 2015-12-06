@@ -66,8 +66,7 @@ public class UDPfe implements Runnable
 	}
 	Integer conID = Integer.parseInt(splited[2]);
 	String whoIsFaulty = null;
-	if(conID.equals(myRM.consecutiveID) && !myRM.notificationID.equals(Integer.parseInt(reqID.trim()))
-			&& myRM.myHostIP.equals(splited[0]))
+	if(!myRM.notificationID.equals(Integer.parseInt(reqID.trim())) && myRM.myHostIP.equals(splited[0]))
 	{		
 		
 			myRM.mycounterRM++;
@@ -78,31 +77,29 @@ public class UDPfe implements Runnable
 
 		if(whoIsFaulty != null && !whoIsFaulty.isEmpty())
 		{
+			myRM.mycounterRM = 0;
 			//sending the message to the correspondent RM to restart it's replica
 			InetAddress aRestart = null;
 
 			if(whoIsFaulty.equals(myRM.myHostIP))
 			{
-				myRM.restartIt = 1;
-			}
-			else
-			{	
-				//this RM(replica) should coordinate with it's replica to update the faulty one
+				//this RM(replica) should coordinate with other RM to update it's replica
 				byte [] m = whoIsFaulty.getBytes();
-				aRestart = InetAddress.getByName("localhost");
+				aRestart = InetAddress.getByName(strAnotherReplica1IP);
 				request = new DatagramPacket(m,  whoIsFaulty.length(), aRestart, updateGroupPort);
 				aSocket.send(request);
+
+				aRestart = InetAddress.getByName(strAnotherReplica2IP);
+				request = new DatagramPacket(m,  whoIsFaulty.length(), aRestart, updateGroupPort);
+				aSocket.send(request);
+
+				myRM.restartIt = 1;
 				continue;
+				
 			}
 		}
 	}
-	else if(!conID.equals(myRM.consecutiveID) && !myRM.notificationID.equals(Integer.parseInt(reqID.trim()))
-			&& myRM.myHostIP.equals(splited[0]))
-	{
-		myRM.mycounterRM = 0;
-		myRM.consecutiveID = conID;
-		myRM.mycounterRM++;
-	}
+	
 	if(myRM.notificationID.equals(Integer.parseInt(reqID.trim())))
 		continue;
 
