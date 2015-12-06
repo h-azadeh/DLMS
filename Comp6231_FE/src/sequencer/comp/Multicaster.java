@@ -26,9 +26,6 @@ public class Multicaster
 	{
 		try
 		{
-			final DatagramSocket serverSocket = new DatagramSocket();
-			
-
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			ObjectOutputStream os = new ObjectOutputStream(outputStream);
 			os.writeObject(message);
@@ -41,11 +38,13 @@ public class Multicaster
 				    	  InetAddress address;
 						try
 						{
+							DatagramSocket serverSocket = new DatagramSocket();
 							address = InetAddress.getByName(Configuration.MULTI_CAST_INET_ADDR);
 						
 							DatagramPacket packet = new DatagramPacket(data, data.length, address,
 									Configuration.MULTI_CAST_INET_PORT);
 							serverSocket.send(packet);
+							serverSocket.close();
 						} catch (IOException e)
 						{
 							e.printStackTrace();
@@ -54,7 +53,6 @@ public class Multicaster
 				t.start();
 			}
 			
-			serverSocket.close();
 			System.out.println("Multicast message sent");
 		} catch (IOException e)
 		{
