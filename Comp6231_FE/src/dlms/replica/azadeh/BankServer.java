@@ -83,6 +83,7 @@ public class BankServer extends Thread{
 			}
 			
 			bSocket = new DatagramSocket(udpPort);
+			bSocket.setReuseAddress(true);
 			byte[] buffer2;
 			
 			while(true)
@@ -374,8 +375,11 @@ public class BankServer extends Thread{
 			double curLoan = 0;
 			
 			serverOutputBuffer.println(operationDate + ":" + "Loan request by "+ accNumber + " " +  String.valueOf(loanAmount));
-							
-			String mapKey = accNumber.substring(0,1);
+				
+			CustomerAccount inputAcc = LookupAccount(accNumber);
+			
+			//String mapKey = accNumber.substring(0,1);
+			String mapKey = inputAcc.GetFirstName().substring(0,1);			
 			
 			if(loansMap.containsKey(mapKey))
 			{
@@ -508,7 +512,7 @@ public class BankServer extends Thread{
 			        }       			        	
 		        }		             	       	              
 		        
-		        it.remove(); // avoids a ConcurrentModificationException
+		        //it.remove(); // avoids a ConcurrentModificationException
 		    }			
 			
 		    serverOutputBuffer.println("Due date could not be extended.");
@@ -579,7 +583,7 @@ public class BankServer extends Thread{
 		        	//allAccountsInfo.put(accountMapKey, accountsList);
 		        }		           	       	              
 		        
-		        accountIterator.remove(); // avoids a ConcurrentModificationException
+		        //accountIterator.remove(); // avoids a ConcurrentModificationException
 		    }			    	
 			
 		}
@@ -909,7 +913,7 @@ public class BankServer extends Thread{
 		        }		       			        	
 	        }		           	       	              
 	    
-	        loanIterator.remove(); // avoids a ConcurrentModificationException
+	        //loanIterator.remove(); // avoids a ConcurrentModificationException
 	    }
 		
 		return loan;
@@ -938,7 +942,7 @@ public class BankServer extends Thread{
 		        }		       			        	
 	        }		           	       	              
 	    
-	        accountIterator.remove(); // avoids a ConcurrentModificationException
+	        //accountIterator.remove(); // avoids a ConcurrentModificationException
 	    }
 		
 		return account;

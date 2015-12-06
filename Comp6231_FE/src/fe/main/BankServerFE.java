@@ -435,14 +435,20 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 					
 					if (replies.size() == 3)
 					{
-						System.out.println("3 replies received!");
-						System.out.println(replies.get(0).getResult());
-						System.out.println(replies.get(1).getResult());					
-						System.out.println(replies.get(2).getResult());
+						System.out.println("3 replies received!");						
 						
 						Class<? extends Object> target = replies.get(0).getResult().getClass();
 						if(target.isArray())
 						{
+							System.out.println(replies.get(0).getResultSender());												
+							System.out.println(Arrays.toString((String[])replies.get(0).getResult()));
+							
+							System.out.println(replies.get(1).getResultSender());
+							System.out.println(Arrays.toString((String[])replies.get(1).getResult()));
+							
+							System.out.println(replies.get(2).getResultSender());
+							System.out.println(Arrays.toString((String[])replies.get(2).getResult()));
+							
 							if(Arrays.equals((String[])replies.get(0).getResult(), (String[])replies.get(1).getResult()) && Arrays.equals((String[])replies.get(0).getResult(), (String[])replies.get(2).getResult()))
 							{
 								validatedRepliesMap.put(key, replies.get(1).getResult());
@@ -462,6 +468,10 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 								validatedRepliesMap.put(key, replies.get(1).getResult());
 								notifyReplicasOfBug(replies.get(0).getResultSender());
 							}
+							else
+							{
+								System.out.println("3 different replies!");
+							}
 						}
 						else
 						{
@@ -480,6 +490,10 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 							{
 								validatedRepliesMap.put(key, replies.get(1).getResult());
 								notifyReplicasOfBug(replies.get(0).getResultSender());
+							}
+							else
+							{
+								System.out.println("3 different replies!");
 							}
 						}
 						
