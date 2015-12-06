@@ -300,9 +300,7 @@ public class BankServer extends Thread{
 			if(bSocket != null) bSocket.close();
 		}
 	}
-	
-	
-	
+		
 	public String openAccount(String firstName, String lastName, String emailAdd, String pw, String phoneNumber)
 	{		
 		try
@@ -339,7 +337,8 @@ public class BankServer extends Thread{
 						if(matchlist.get(i).GetFirstName().equals(account.GetFirstName()) && matchlist.get(i).GetLastName().equals(account.GetLastName()))				
 						{
 							serverOutputBuffer.println(operationDate + ":" + "An account already exists for " + account.GetFirstName() + account.GetLastName());
-							return Configuration.ACCOUNT_EXISTS + " " + matchlist.get(i).GetAccNumber();
+							//return Configuration.ACCOUNT_EXISTS + " " + matchlist.get(i).GetAccNumber();
+							return Configuration.ACCOUNT_EXISTS;
 						}
 					}	
 				}										
@@ -560,6 +559,8 @@ public class BankServer extends Thread{
 			        	List<Loan> keyLoansList = loansMap.get(accountMapKey);
 			        	if(keyLoansList != null)
 			        	{
+			        		serverOutputBuffer.println("Adding account loans...");
+			        		serverOutputBuffer.flush();
 			        		for(int k=0; k < keyLoansList.size() ; k++)
 			        		{
 			        			if(keyLoansList.get(k).GetAccNumber().equals(curAccNumber))
@@ -568,13 +569,13 @@ public class BankServer extends Thread{
 			        			}
 			        		}
 			        		
-			        		accountsList.get(i).SetcustomerLoansList(curAccountLoansList);
-			        		CustomersList.add(accountsList.get(i));				        					        	
+			        		accountsList.get(i).SetcustomerLoansList(curAccountLoansList);			        						        					        	
 			        	}			        				        	
+			        	CustomersList.add(accountsList.get(i));
 			        }		
 		        	
-		        	allAccountsInfo.remove(accountMapKey);
-		        	allAccountsInfo.put(accountMapKey, accountsList);
+		        	//allAccountsInfo.remove(accountMapKey);
+		        	//allAccountsInfo.put(accountMapKey, accountsList);
 		        }		           	       	              
 		        
 		        accountIterator.remove(); // avoids a ConcurrentModificationException
@@ -590,7 +591,7 @@ public class BankServer extends Thread{
 		serverOutputBuffer.flush();
 		
 		returnList = new String[customerCounter];
-		for(int q=0;q<=customerCounter;q++)
+		for(int q=0;q<customerCounter;q++)
 		{
 			returnList[q] = CustomersList.get(q).toString();
 			
