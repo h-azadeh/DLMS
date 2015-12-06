@@ -12,11 +12,11 @@ public class Configuration
 	}
 
 	public final static String MULTI_CAST_INET_ADDR = "224.2.2.3";
-	public final static String SEQUENCER_IP = "localhost";
+	public final static String SEQUENCER_IP = "mascouten";
 	public final static int MULTI_CAST_INET_PORT = 9966;
 	public final static int SEQUENCER_PORT = 9999;
 	public final static String LOCAL_HOST_NAME = "mascouten";
-	public final static String[] MULTI_CAST_GROUP_IPS= {"192.168.2.14", "192.168.2.34", "localhost"};
+	public final static String[] MULTI_CAST_GROUP_IPS= {"mascouten", "mechoopda", "menominee"};
 	public final static int[] MULTI_CAST_GROUP_PORTS= {11001, 11002, 11003};
 	
 	public final static String Replica1_Name = "Replica1"; //Sai

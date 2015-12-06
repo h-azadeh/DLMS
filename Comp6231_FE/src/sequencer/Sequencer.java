@@ -112,7 +112,7 @@ public class Sequencer implements UDPNotifierIF, Runnable, QueueManagementIF
         }
 
     }
-
+    
     //get head of the queue
     @Override
     public UDPProtocol tryToGetQueueHead()
@@ -120,7 +120,7 @@ public class Sequencer implements UDPNotifierIF, Runnable, QueueManagementIF
         return fifoQueue.poll();
     }
 
-    //not useful for now
+    //this is not useful for now 
     @Override
     public void moveToSentList(UDPProtocol message)
     {

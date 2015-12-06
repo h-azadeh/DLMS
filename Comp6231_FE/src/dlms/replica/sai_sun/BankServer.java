@@ -107,8 +107,8 @@ public class BankServer
 				// check if given current date matches the date on file,if not
 				// then return false, otherwise, update the loan due date
 				// to the new one
-				if (loan.getDueDate().equals(currentDueDate))
-				{
+/*				if (loan.getDueDate().equals(currentDueDate))
+				{*/
 					loan.setDueDate(newDueDate);
 					u.getLoanList().remove(oldLoan);
 					u.getLoanList().add(loan);
@@ -118,11 +118,11 @@ public class BankServer
 							"Successfully requested to delay a loan to " + newDueDate);
 					return true;
 
-				} else
+/*				} else
 				{
 					Logger.getInstance().log(getUserLogFileName(u),
 							"Current due date doesn't match due date on file");
-				}
+				}*/
 			}
 		}
 		return false;
@@ -137,6 +137,7 @@ public class BankServer
 	public String[] printCustomerInfoToArray(String bank)
 	{
 		Logger.getInstance().log(getManagerLogFileName(), "Requested to print all customer info");
+		System.out.println(m_customerList.getAllCustomerInfoToStringArray(true).toString());
 		return m_customerList.getAllCustomerInfoToStringArray(true);
 	}
 

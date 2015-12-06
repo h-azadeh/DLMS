@@ -56,7 +56,7 @@ public class User implements Serializable
 		m_loanList = new ArrayList<Loan>();
 		if (!admin)
 		{
-			m_usr = pri_firstName + "_" + pri_lastName;
+			m_usr = pri_firstName;
 		} else
 		{
 			m_usr = "Manager";
@@ -90,7 +90,7 @@ public class User implements Serializable
 		m_loanList = new ArrayList<Loan>();
 		if (!admin)
 		{
-			m_usr = pri_firstName + "_" + pri_lastName;
+			m_usr = pri_firstName;
 		} else
 		{
 			m_usr = "Manager";
@@ -113,7 +113,7 @@ public class User implements Serializable
 		m_loanList = new ArrayList<Loan>();
 		if (!pri_isAdmin)
 		{
-			m_usr = pri_firstName + "_" + pri_lastName;
+			m_usr = pri_firstName;
 		} else
 		{
 			m_usr = "Manager";

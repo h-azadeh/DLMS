@@ -30,7 +30,7 @@ public class Configuration {
 	
 	public final static String HOST_NAME = "localhost";
 
-    //replica internal communication message types
+    //replica internal communication message types 
     public enum messageType
     {
         RequestLoan, LoanAnswer, Transfer, TransferAnswer, ValidateAdmin, RollBack, Commit;
