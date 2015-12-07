@@ -198,10 +198,15 @@ public class BankServer extends Thread {
 						account.SetFirstName(clientFirstName);
 						account.SetLastName(clientLastName);
 
+						/*
 						newAccountNumber = account.GetFirstName().substring(0, 2)
 								.concat(account.GetLastName().substring(0, 2));
 						newAccountNumber = newAccountNumber.concat(serverName);
-
+						*/
+						accountCounter++;
+						int accountNumberInt = accountCounter;
+						newAccountNumber = Integer.toString(accountNumberInt);
+						
 						String mapKey = account.GetFirstName().substring(0, 1);
 
 						account.SetAccNumber(newAccountNumber);
