@@ -132,7 +132,7 @@ public class Utility
 
 	public static int getUDPPortByBankName(String name)
 	{
-		int ret = getIndexFromArray(name.toUpperCase(), ReplicaConfiguration.BANK_NAME_POOL);
+		int ret = getIndexFromArray(name, ReplicaConfiguration.BANK_NAME_POOL);
 		if (ret != -1)
 		{
 			return ReplicaConfiguration.PORT_POOL[ret];

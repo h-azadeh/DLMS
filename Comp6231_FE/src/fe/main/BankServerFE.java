@@ -306,6 +306,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 
 		clientRequest.setOtherBank(OtherBank);
 		clientRequest.setCurrentBank(CurrentBank);
+		clientRequest.setLoanId(loanID);
 
 		boolean finalReply;
 		String reply = "Loan could not be transfered!";
