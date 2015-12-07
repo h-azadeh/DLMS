@@ -123,7 +123,7 @@ public class Replica implements UDPNotifierIF{
         // return empty string if the bank name can't be found in the server
         // list
         return getServerById(bankId) == null ? "" : getServerById(bankId).openAccount(
-                firstName, lastName, emailAddress,phoneNumber, password);
+                firstName, lastName, emailAddress, password, phoneNumber);
     }
 
     public boolean getLoan(String accountNumber, String password, double loanAmount, int bankId)
@@ -173,13 +173,17 @@ public class Replica implements UDPNotifierIF{
             message.setReplicaReply(reply);
             try
             {
+            	Thread.sleep(10);            	
                 //send result back to FE
                 UDPSender.sendUDPPacket(fe.main.Configuration.FE_IP, fe.main.Configuration.FE_PORT,
                         message);
             } catch (IOException e)
             {
                 e.printStackTrace();
-            }
+            } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             break;
 
         case GET_LOAN:
@@ -190,12 +194,16 @@ public class Replica implements UDPNotifierIF{
             message.setReplicaReply(reply);
             try
             {
+            	Thread.sleep(10);
                 UDPSender.sendUDPPacket(fe.main.Configuration.FE_IP, fe.main.Configuration.FE_PORT,
                         message);
             } catch (IOException e)
             {
                 e.printStackTrace();
-            }
+            } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             break;
         case DELAY_LOAN:
             ret = delayPayment(Integer.toString(message.getClientRequest().getLoanId()), message
@@ -205,12 +213,16 @@ public class Replica implements UDPNotifierIF{
             message.setReplicaReply(reply);
             try
             {
+            	Thread.sleep(10);
                 UDPSender.sendUDPPacket(fe.main.Configuration.FE_IP, fe.main.Configuration.FE_PORT,
                         message);
             } catch (IOException e)
             {
                 e.printStackTrace();
-            }
+            } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             break;
         case PRINT_INFO:
             ret = printCustomerInfo(message.getFeHeader().getBankId());
@@ -218,12 +230,16 @@ public class Replica implements UDPNotifierIF{
             message.setReplicaReply(reply);
             try
             {
+            	Thread.sleep(10);
                 UDPSender.sendUDPPacket(fe.main.Configuration.FE_IP, fe.main.Configuration.FE_PORT,
                         message);
             } catch (IOException e)
             {
                 e.printStackTrace();
-            }
+            } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             break;
         case TRANSFER_LOAN:
             ret = transferLoan(Integer.toString(message.getClientRequest().getLoanId()), message
@@ -233,12 +249,16 @@ public class Replica implements UDPNotifierIF{
             message.setReplicaReply(reply);
             try
             {
+            	Thread.sleep(10);
                 UDPSender.sendUDPPacket(fe.main.Configuration.FE_IP, fe.main.Configuration.FE_PORT,
                         message);
             } catch (IOException e)
             {
                 e.printStackTrace();
-            }
+            } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             break;
         default:
             System.err.println("Operation not supported");
