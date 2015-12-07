@@ -431,6 +431,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 
 			while (waitingForReplies)
 			{
+				Thread.sleep(10);
 				if (repliesMap.containsKey(key))
 				{
 					replies = repliesMap.get(key);
@@ -473,6 +474,10 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 							else
 							{
 								System.out.println("3 different replies!");
+								notifyReplicasOfBug(replies.get(0).getResultSender());
+								notifyReplicasOfBug(replies.get(1).getResultSender());
+								notifyReplicasOfBug(replies.get(2).getResultSender());
+								waitingForReplies= false;
 							}
 						}
 						else
@@ -496,6 +501,10 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 							else
 							{
 								System.out.println("3 different replies!");
+								notifyReplicasOfBug(replies.get(0).getResultSender());
+								notifyReplicasOfBug(replies.get(1).getResultSender());
+								notifyReplicasOfBug(replies.get(2).getResultSender());
+								waitingForReplies= false;
 							}
 						}
 						
@@ -523,7 +532,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 								validatedRepliesMap.put(key, replies.get(1).getResult());
 							}
 						}						
-						slowestReplyTime = (System.currentTimeMillis() - startTime) * 20 + 10;
+						slowestReplyTime = (System.currentTimeMillis() - startTime) * 20 + 100;
 						slowestReplyTimeSet = true;
 					} else if (slowestReplyTimeSet == true)
 					{

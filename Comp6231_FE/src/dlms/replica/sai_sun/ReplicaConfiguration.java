@@ -44,6 +44,6 @@ public class ReplicaConfiguration
 	public static final Integer UDP_SERVER_NOTIFY_3 = 9772;
 	public final static int[] UPDATER_PORT_POOL = {UDP_SERVER_NOTIFY_1,UDP_SERVER_NOTIFY_2,UDP_SERVER_NOTIFY_3};
 
-	public static final String UDP_FE_ANOTHER_IP_1 = "mechoopda";
-	public static final String UDP_FE_ANOTHER_IP_2 = "menominee";
+	public static final String UDP_FE_ANOTHER_IP_1 = "192.168.2.34";
+	public static final String UDP_FE_ANOTHER_IP_2 = "192.168.2.34";
 }
