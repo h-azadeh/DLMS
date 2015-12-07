@@ -229,7 +229,7 @@ public class User implements Serializable
 		for (Loan l : m_loanList)
 		{
 			list.add(l.getDueDate());
-			list.add(Double.toString(l.getAmount()));
+			list.add(Integer.toString((int)l.getAmount()));
 			list.add(l.getId());
 		}
 

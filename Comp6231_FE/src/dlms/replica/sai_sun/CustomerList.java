@@ -621,7 +621,7 @@ public class CustomerList
 				list.add(u.getLastName());
 				list.add(u.getEmail());
 				list.add(u.getPhone());
-				list.add(u.getUsr());
+				list.add(u.getAccount());
 				list = u.toLoanString(list);
 				list.add("\n");
 			}
