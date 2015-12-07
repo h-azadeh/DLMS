@@ -32,8 +32,7 @@ import dlms.replica.sai_sun.Utility;
 /**
  * The implementation of Bank server
  */
-public class BankServer extends Thread
-{
+public class BankServer extends Thread {
 
 	private Map<String, List<CustomerAccount>> accountsMap;
 	private Map<String, List<Loan>> loansMap;
@@ -52,8 +51,7 @@ public class BankServer extends Thread
 
 	private int accountCounter;
 
-	public BankServer(String name) throws IOException
-	{
+	public BankServer(String name) throws IOException {
 		System.out.println("starting " + name);
 
 		serverName = name;
@@ -61,18 +59,19 @@ public class BankServer extends Thread
 		loansMap = Collections.synchronizedMap(new HashMap<String, List<Loan>>());
 		maxLoanId = 0;
 		accountCounter = 0;
-		this.start();
+
+		filePath = Configuration.FILE_PATH;
+		String fileName = filePath + name + ".txt";
+
+		start();
 	}
 
-	public void run()
-	{
+	public void run() {
 		DatagramSocket bSocket = null;
-		try
-		{
+		try {
 			int udpPort = 0;
 
-			switch (serverName)
-			{
+			switch (serverName) {
 			case Configuration.SERVER_1_NAME:
 				udpPort = Configuration.UDP_SERVER_1_PORT;
 				break;
@@ -88,8 +87,7 @@ public class BankServer extends Thread
 			bSocket.setReuseAddress(true);
 			byte[] buffer2;
 
-			while (true)
-			{
+			while (true) {
 				buffer2 = new byte[2048];
 
 				DatagramPacket request2 = new DatagramPacket(buffer2, buffer2.length);
@@ -98,8 +96,7 @@ public class BankServer extends Thread
 				String requestContent = new String(request2.getData()).trim();
 				List<String> requestParts = Arrays.asList(requestContent.split(","));
 
-				switch (requestParts.get(0))
-				{
+				switch (requestParts.get(0)) {
 				case Configuration.CheckLoanUdpRequestPrefix:
 					System.out.println("Check loan request.");
 					
@@ -115,32 +112,22 @@ public class BankServer extends Thread
 					String customerFullName;
 					double totalLoan = 0;
 
-					if (accMatchlist2 != null)
-					{
-						for (int j = 0; j < accMatchlist2.size(); j++)
-						{
-							customerFullName = accMatchlist2.get(j).GetFirstName()
-									+ accMatchlist2.get(j).GetLastName();
+					if (accMatchlist2 != null) {
+						for (int j = 0; j < accMatchlist2.size(); j++) {
+							customerFullName = accMatchlist2.get(j).GetFirstName() + accMatchlist2.get(j).GetLastName();
 
-							if (customerFullName.equals(fullName))
-							{
+							if (customerFullName.equals(fullName)) {
 								// Check loans
 								String accountNumber2 = accMatchlist2.get(j).GetAccNumber();
 
-								if (loansMap.containsKey(mapKey2))
-								{
+								if (loansMap.containsKey(mapKey2)) {
 									List<Loan> matchlist2 = new ArrayList<Loan>();
 									matchlist2 = loansMap.get(mapKey2);
 
-									if (matchlist2 != null)
-									{
-										for (int n = 0; n < matchlist2.size(); n++)
-										{
-											if (matchlist2.get(n).GetAccNumber()
-													.equals(accountNumber2))
-											{
-												totalLoan = totalLoan
-														+ matchlist2.get(n).GetAmount();
+									if (matchlist2 != null) {
+										for (int n = 0; n < matchlist2.size(); n++) {
+											if (matchlist2.get(n).GetAccNumber().equals(accountNumber2)) {
+												totalLoan = totalLoan + matchlist2.get(n).GetAmount();
 											}
 										}
 									}
@@ -153,13 +140,13 @@ public class BankServer extends Thread
 					String totalLoanString = String.valueOf(totalLoan);
 					byte[] totalLoanByte = totalLoanString.getBytes();
 
-					DatagramPacket reply2 = new DatagramPacket(totalLoanByte,
-							totalLoanString.length(), request2.getAddress(), request2.getPort());
+					DatagramPacket reply2 = new DatagramPacket(totalLoanByte, totalLoanString.length(),
+							request2.getAddress(), request2.getPort());
 					bSocket.send(reply2);
 
 					Date opDate = new Date();
-					System.out.println(opDate + ": Reply to other server's inquiry about "
-							+ fullName + " : " + totalLoanString + " loan");
+					System.out.println(opDate + ": Reply to other server's inquiry about " + fullName + " : "
+							+ totalLoanString + " loan");
 					
 
 					break;
@@ -171,6 +158,9 @@ public class BankServer extends Thread
 					String clientFirstName = requestParts.get(1).trim();
 					String clientLastName = requestParts.get(2).trim();
 					String clientfullName = clientFirstName + clientLastName;
+					
+					String clientEmail = requestParts.get(5).trim();
+					String clientPhone = requestParts.get(6).trim();
 
 					String strLoanAmount = requestParts.get(3).trim();
 					double loanAmount = Double.parseDouble(strLoanAmount);
@@ -188,14 +178,10 @@ public class BankServer extends Thread
 
 					String loanAccNumber = "";
 
-					if (accMatchlistTransfer != null)
-					{
-						for (int i = 0; i < accMatchlistTransfer.size(); i++)
-						{
+					if (accMatchlistTransfer != null) {
+						for (int i = 0; i < accMatchlistTransfer.size(); i++) {
 							if (accMatchlistTransfer.get(i).GetFirstName().equals(clientFirstName)
-									&& accMatchlistTransfer.get(i).GetLastName()
-											.equals(clientLastName))
-							{
+									&& accMatchlistTransfer.get(i).GetLastName().equals(clientLastName)) {
 								existingAccount = accMatchlistTransfer.get(i);
 								loanAccNumber = accMatchlistTransfer.get(i).GetAccNumber();
 							}
@@ -203,19 +189,26 @@ public class BankServer extends Thread
 					}
 
 					String newAccountNumber = "";
-					if (existingAccount.GetAccNumber().equals(""))
-					{
+					if (existingAccount.GetAccNumber().equals("")) {
 						System.out.println("Must create new account.");
 						
 						// must create account
 						CustomerAccount account = new CustomerAccount();
 						account.SetFirstName(clientFirstName);
 						account.SetLastName(clientLastName);
-
+						
+						account.SetEmailAddress(clientEmail);
+						account.SetPhoneNumber(clientPhone);
+						
+						/*
 						newAccountNumber = account.GetFirstName().substring(0, 2)
 								.concat(account.GetLastName().substring(0, 2));
 						newAccountNumber = newAccountNumber.concat(serverName);
-
+						*/
+						accountCounter++;
+						int accountNumberInt = accountCounter;
+						newAccountNumber = Integer.toString(accountNumberInt);
+						
 						String mapKey = account.GetFirstName().substring(0, 1);
 
 						account.SetAccNumber(newAccountNumber);
@@ -244,36 +237,29 @@ public class BankServer extends Thread
 					String replyContentString = Configuration.TransferLoanUdpRequestPrefix + ",OK";
 					byte[] replyContentByte = replyContentString.getBytes();
 
-					DatagramPacket transferReply1 = new DatagramPacket(replyContentByte,
-							replyContentString.length(), request2.getAddress(), request2.getPort());
+					DatagramPacket transferReply1 = new DatagramPacket(replyContentByte, replyContentString.length(),
+							request2.getAddress(), request2.getPort());
 					bSocket.send(transferReply1);
 
 					Date reply1Date = new Date();
-					System.out.println(reply1Date
-							+ ": Reply to other server's transfer request for " + clientfullName);
+					System.out
+							.println(reply1Date + ": Reply to other server's transfer request for " + clientfullName);
 					
 
 					// wait for other server's confirmation/rejection
 					boolean transferComplete = false;
-					while (!transferComplete)
-					{
-						DatagramPacket transferConfirmation = new DatagramPacket(buffer2,
-								buffer2.length);
+					while (!transferComplete) {
+						DatagramPacket transferConfirmation = new DatagramPacket(buffer2, buffer2.length);
 						bSocket.receive(transferConfirmation);
 
-						String confirmationContent = new String(transferConfirmation.getData())
-								.trim();
-						List<String> confirmationParts = Arrays.asList(confirmationContent
-								.split(","));
+						String confirmationContent = new String(transferConfirmation.getData()).trim();
+						List<String> confirmationParts = Arrays.asList(confirmationContent.split(","));
 
-						switch (confirmationParts.get(0))
-						{
+						switch (confirmationParts.get(0)) {
 						case Configuration.TransferLoanUdpRequestPrefix:
-							switch (confirmationParts.get(1))
-							{
+							switch (confirmationParts.get(1)) {
 							case Configuration.TransferReject:
-								System.out
-										.println("Transfer could not be completed by other server.");
+								System.out.println("Transfer could not be completed by other server.");
 								
 
 								// delete the loan
@@ -282,8 +268,7 @@ public class BankServer extends Thread
 								
 
 								// delete the account
-								if (!newAccountNumber.equals(""))
-								{
+								if (!newAccountNumber.equals("")) {
 									deleteAccount(mapKeyTransfer, newAccountNumber);
 
 									System.out.println("Delete the account.");
@@ -305,29 +290,22 @@ public class BankServer extends Thread
 					break;
 				}
 			}
-		} catch (SocketException e)
-		{
+		} catch (SocketException e) {
 			System.out.println("Socket: " + e.getMessage());
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			System.out.println("IO: " + e.getMessage());
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			System.out.println("Exception: " + e.getMessage());
-		} finally
-		{
+		} finally {
 			if (bSocket != null)
 				bSocket.close();
 		}
 	}
 
-	public String openAccount(String firstName, String lastName, String emailAdd, String pw,
-			String phoneNumber)
-	{
-		try
-		{
+	public String openAccount(String firstName, String lastName, String emailAdd, String pw, String phoneNumber) {
+		try {
 			System.out.println("Opening account...");
-
+			
 			CustomerAccount account = new CustomerAccount();
 			account.SetAccNumber("Z");
 			account.SetCreditLimit(0);
@@ -350,21 +328,16 @@ public class BankServer extends Thread
 
 			String mapKey = account.GetFirstName().substring(0, 1);
 
-			if (accountsMap.containsKey(mapKey))
-			{
+			if (accountsMap.containsKey(mapKey)) {
 				List<CustomerAccount> matchlist = new ArrayList<CustomerAccount>();
 				matchlist = accountsMap.get(mapKey);
 
-				if (matchlist != null)
-				{
-					for (int i = 0; i < matchlist.size(); i++)
-					{
+				if (matchlist != null) {
+					for (int i = 0; i < matchlist.size(); i++) {
 						if (matchlist.get(i).GetFirstName().equals(account.GetFirstName())
-								&& matchlist.get(i).GetLastName().equals(account.GetLastName()))
-						{
-							System.out.println(operationDate + ":"
-									+ "An account already exists for " + account.GetFirstName()
-									+ account.GetLastName());
+								&& matchlist.get(i).GetLastName().equals(account.GetLastName())) {
+							System.out.println(operationDate + ":" + "An account already exists for "
+									+ account.GetFirstName() + account.GetLastName());
 							// return Configuration.ACCOUNT_EXISTS + " " +
 							// matchlist.get(i).GetAccNumber();
 							return Configuration.ACCOUNT_EXISTS;
@@ -378,47 +351,40 @@ public class BankServer extends Thread
 
 			addToAccountsMap(mapKey, account);
 
-			System.out.println(operationDate + ":" + "opened account " + newAccNumber
-					+ " for " + account.GetFirstName() + account.GetLastName());
+			System.out.println(operationDate + ":" + "opened account " + newAccNumber + " for "
+					+ account.GetFirstName() + account.GetLastName());
 
 			
 
 			return newAccNumber;
-		} catch (Exception e)
-		{
-			e.printStackTrace();
+		} catch (Exception e) {
+
 		}
 
 		return "An error occured! Please try again!";
 
 	}
 
-	public boolean getLoan(String accNumber, String password, int loanAmount)
-	{
-		try
-		{
+	public boolean getLoan(String accNumber, String password, int loanAmount) {
+		try {
 			Date operationDate = new Date();
 			double curLoan = 0;
 
-			System.out.println(operationDate + ":" + "Loan request by " + accNumber + " "
-					+ String.valueOf(loanAmount));
+			System.out
+					.println(operationDate + ":" + "Loan request by " + accNumber + " " + String.valueOf(loanAmount));
 
 			CustomerAccount inputAcc = LookupAccount(accNumber);
 
 			// String mapKey = accNumber.substring(0,1);
 			String mapKey = inputAcc.GetFirstName().substring(0, 1);
 
-			if (loansMap.containsKey(mapKey))
-			{
+			if (loansMap.containsKey(mapKey)) {
 				List<Loan> matchlist = new ArrayList<Loan>();
 				matchlist = loansMap.get(mapKey);
 
-				if (matchlist != null)
-				{
-					for (int i = 0; i < matchlist.size(); i++)
-					{
-						if (matchlist.get(i).GetAccNumber().equals(accNumber))
-						{
+				if (matchlist != null) {
+					for (int i = 0; i < matchlist.size(); i++) {
+						if (matchlist.get(i).GetAccNumber().equals(accNumber)) {
 							curLoan = curLoan + matchlist.get(i).GetAmount();
 						}
 					}
@@ -429,44 +395,36 @@ public class BankServer extends Thread
 			List<CustomerAccount> accMatchlist = new ArrayList<CustomerAccount>();
 			accMatchlist = accountsMap.get(mapKey);
 
-			if (accMatchlist != null)
-			{
-				for (int i = 0; i < accMatchlist.size(); i++)
-				{
-					if (accMatchlist.get(i).GetAccNumber().equals(accNumber))
-					{
+			if (accMatchlist != null) {
+				for (int i = 0; i < accMatchlist.size(); i++) {
+					if (accMatchlist.get(i).GetAccNumber().equals(accNumber)) {
 						// check with other Banks
-						String fullName = accMatchlist.get(i).GetFirstName()
-								+ accMatchlist.get(i).GetLastName();
+						String fullName = accMatchlist.get(i).GetFirstName() + accMatchlist.get(i).GetLastName();
 
 						double totalLoanWithOtherBanks = 0;
 
-						switch (serverName)
-						{
+						switch (serverName) {
 						case Configuration.SERVER_1_NAME:
-							totalLoanWithOtherBanks = CheckLoanWithOtherBanks(fullName,
-									Configuration.SERVER_2_NAME, Configuration.UDP_SERVER_2_PORT,
-									Configuration.SERVER_3_NAME, Configuration.UDP_SERVER_3_PORT);
+							totalLoanWithOtherBanks = CheckLoanWithOtherBanks(fullName, Configuration.SERVER_2_NAME,
+									Configuration.UDP_SERVER_2_PORT, Configuration.SERVER_3_NAME,
+									Configuration.UDP_SERVER_3_PORT);
 							break;
 						case Configuration.SERVER_2_NAME:
-							totalLoanWithOtherBanks = CheckLoanWithOtherBanks(fullName,
-									Configuration.SERVER_1_NAME, Configuration.UDP_SERVER_1_PORT,
-									Configuration.SERVER_3_NAME, Configuration.UDP_SERVER_3_PORT);
+							totalLoanWithOtherBanks = CheckLoanWithOtherBanks(fullName, Configuration.SERVER_1_NAME,
+									Configuration.UDP_SERVER_1_PORT, Configuration.SERVER_3_NAME,
+									Configuration.UDP_SERVER_3_PORT);
 							break;
 						case Configuration.SERVER_3_NAME:
-							totalLoanWithOtherBanks = CheckLoanWithOtherBanks(fullName,
-									Configuration.SERVER_2_NAME, Configuration.UDP_SERVER_2_PORT,
-									Configuration.SERVER_1_NAME, Configuration.UDP_SERVER_1_PORT);
+							totalLoanWithOtherBanks = CheckLoanWithOtherBanks(fullName, Configuration.SERVER_2_NAME,
+									Configuration.UDP_SERVER_2_PORT, Configuration.SERVER_1_NAME,
+									Configuration.UDP_SERVER_1_PORT);
 							break;
 						}
 
-						System.out.println("Total loans with other Banks:"
-								+ totalLoanWithOtherBanks);
+						System.out.println("Total loans with other Banks:" + totalLoanWithOtherBanks);
 						
 
-						if (accMatchlist.get(i).GetCreditLimit() < curLoan
-								+ totalLoanWithOtherBanks + loanAmount)
-						{
+						if (accMatchlist.get(i).GetCreditLimit() < curLoan + totalLoanWithOtherBanks + loanAmount) {
 							System.out.println("Request rejected.");
 							
 
@@ -499,8 +457,7 @@ public class BankServer extends Thread
 
 			return true;
 
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 
 		}
@@ -508,37 +465,29 @@ public class BankServer extends Thread
 		return false;
 	}
 
-	public boolean delayPayment(int loanId, String curDueDateIdl, String newDueDateIdl)
-	{
-		try
-		{
+	public boolean delayPayment(int loanId, String curDueDateIdl, String newDueDateIdl) {
+		try {
 			DateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
 			Date curDueDate = format.parse(curDueDateIdl);
 			Date newDueDate = format.parse(newDueDateIdl);
 
 			Date operationDate = new Date();
-			System.out.println(operationDate + ":"
-					+ "Delay payment request by manager from " + curDueDate + "to " + newDueDate
-					+ " for loanId: " + loanId);
+			System.out.println(operationDate + ":" + "Delay payment request by manager from " + curDueDate
+					+ "to " + newDueDate + " for loanId: " + loanId);
 
 			Iterator it = loansMap.entrySet().iterator();
-			while (it.hasNext())
-			{
+			while (it.hasNext()) {
 				Map.Entry pair = (Map.Entry) it.next();
 
 				List<Loan> loansList = (ArrayList<Loan>) pair.getValue();
 				String mapKey = (String) pair.getKey();
 
-				if (loansList != null)
-				{
-					for (int i = 0; i < loansList.size(); i++)
-					{
-						if (loansList.get(i).GetLoanId() == loanId)
-						{
+				if (loansList != null) {
+					for (int i = 0; i < loansList.size(); i++) {
+						if (loansList.get(i).GetLoanId() == loanId) {
 							loansList.get(i).SetDueDate(newDueDate);
 
-							synchronized (loansMap)
-							{
+							synchronized (loansMap) {
 								loansMap.put(mapKey, loansList);
 							}
 
@@ -559,54 +508,45 @@ public class BankServer extends Thread
 
 			return false;
 
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 
 		}
 
 		return false;
 	}
 
-	public String[] printCustomerInfo()
-	{
+	public String[] printCustomerInfo() {
 		Map<String, List<CustomerAccount>> allAccountsInfo = accountsMap;
 		int customerCounter = 0;
 		List<CustomerAccount> CustomersList = new ArrayList<CustomerAccount>();
 		String[] returnList;
 
-		try
-		{
+		try {
 			Date operationDate = new Date();
 			System.out.println(operationDate + ":" + "Customer info request by manager");
 			
 
 			Iterator accountIterator = allAccountsInfo.entrySet().iterator();
-			while (accountIterator.hasNext())
-			{
+			while (accountIterator.hasNext()) {
 
 				Map.Entry pair = (Map.Entry) accountIterator.next();
 
 				List<CustomerAccount> accountsList = (ArrayList<CustomerAccount>) pair.getValue();
 				String accountMapKey = (String) pair.getKey();
 
-				if (accountsList != null)
-				{
-					for (int i = 0; i < accountsList.size(); i++)
-					{
+				if (accountsList != null) {
+					for (int i = 0; i < accountsList.size(); i++) {
 						customerCounter++;
 
 						String curAccNumber = accountsList.get(i).GetAccNumber();
 						List<Loan> curAccountLoansList = new ArrayList<Loan>();
 
 						List<Loan> keyLoansList = loansMap.get(accountMapKey);
-						if (keyLoansList != null)
-						{
+						if (keyLoansList != null) {
 							System.out.println("Adding account loans...");
 							
-							for (int k = 0; k < keyLoansList.size(); k++)
-							{
-								if (keyLoansList.get(k).GetAccNumber().equals(curAccNumber))
-								{
+							for (int k = 0; k < keyLoansList.size(); k++) {
+								if (keyLoansList.get(k).GetAccNumber().equals(curAccNumber)) {
 									curAccountLoansList.add(keyLoansList.get(k));
 								}
 							}
@@ -624,8 +564,7 @@ public class BankServer extends Thread
 				// ConcurrentModificationException
 			}
 
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 
 		}
 
@@ -634,8 +573,7 @@ public class BankServer extends Thread
 
 		returnList = new String[customerCounter];
 		ArrayList<String> list = new ArrayList<String>();
-		for (int q = 0; q < customerCounter; q++)
-		{
+		for (int q = 0; q < customerCounter; q++) {			
 			list.add(CustomersList.get(q).GetFirstName());
 			list.add(CustomersList.get(q).GetLastName());
 			list.add(CustomersList.get(q).GetEmailAddress());
@@ -648,19 +586,16 @@ public class BankServer extends Thread
 		return list.toArray(new String[list.size()]);
 	}
 
-	public boolean transferLoan(int loanID, String CurrentBank, String OtherBank)
-	{
-		try
-		{
+	public boolean transferLoan(int loanID, String CurrentBank, String OtherBank) {
+		try {
 			Date operationDate = new Date();
-			System.out.println(operationDate + ":" + "Transfer loan request for loanId: "
-					+ loanID + " to " + OtherBank);
+			System.out
+					.println(operationDate + ":" + "Transfer loan request for loanId: " + loanID + " to " + OtherBank);
 			
 
 			// check if loan exists
 			Loan curLoan = LookupLoan(loanID);
-			if (curLoan == null)
-			{
+			if (curLoan == null) {
 				// return "A loan with the given id could not be found. Please
 				// check the loanId and try again!";
 				return false;
@@ -672,8 +607,7 @@ public class BankServer extends Thread
 			// Look up client name
 			CustomerAccount curAccount = LookupAccount(curLoan.GetAccNumber());
 
-			if (curAccount == null)
-			{
+			if (curAccount == null) {
 				// return "An error occurred. Please try again!";
 				return false;
 			}
@@ -683,13 +617,16 @@ public class BankServer extends Thread
 
 			String ClientFirstName = curAccount.GetFirstName();
 			String ClientLastName = curAccount.GetLastName();
+			String ClientEmail = curAccount.GetEmailAddress();
+			String ClientPhone = curAccount.GetPhoneNumber();
+			
+			String dueDate = Utility.dateToString(curLoan.GetDueDate());
 
 			String MapKey = ClientFirstName.substring(0, 1);
 
 			int udpPort = 0;
 
-			switch (OtherBank)
-			{
+			switch (OtherBank) {
 			case Configuration.SERVER_1_NAME:
 				udpPort = Configuration.UDP_SERVER_1_PORT;
 				break;
@@ -711,9 +648,8 @@ public class BankServer extends Thread
 			// + "," + ClientFirstName + "," + ClientLastName + "," +
 			// String.valueOf(curLoan.GetAmount()) + "," +
 			// curLoan.GetDueDate().toString();
-			String requestString = Configuration.TransferLoanUdpRequestPrefix + ","
-					+ ClientFirstName + "," + ClientLastName + ","
-					+ String.valueOf(curLoan.GetAmount()) + ",2016-11-01";
+			String requestString = Configuration.TransferLoanUdpRequestPrefix + "," + ClientFirstName + ","
+					+ ClientLastName + "," + String.valueOf(curLoan.GetAmount()) + "," + dueDate + "," + ClientEmail + "," + ClientPhone;
 			byte[] requestByte = requestString.getBytes();
 
 			System.out.println("Request string:" + requestString);
@@ -721,13 +657,12 @@ public class BankServer extends Thread
 
 			InetAddress aHost = InetAddress.getByName("localhost");
 
-			DatagramPacket transferRequest = new DatagramPacket(requestByte,
-					requestString.length(), aHost, udpPort);
+			DatagramPacket transferRequest = new DatagramPacket(requestByte, requestString.length(), aHost, udpPort);
 			transferSocket.send(transferRequest);
 
 			Date opDate = new Date();
-			System.out.println(opDate + ": Transfer request sent to " + OtherBank
-					+ " for loan with id: " + loanID);
+			System.out
+					.println(opDate + ": Transfer request sent to " + OtherBank + " for loan with id: " + loanID);
 			
 
 			// wait for reply
@@ -735,8 +670,7 @@ public class BankServer extends Thread
 			transferSocket.receive(transferReply);
 
 			// delete loan
-			try
-			{
+			try {
 				deleteLoan(MapKey, loanID);
 				System.out.println("Deleted the loan.");
 				
@@ -746,8 +680,7 @@ public class BankServer extends Thread
 						+ Configuration.TransferFinalize;
 				byte[] finalMsgByte = finalMsgString.getBytes();
 
-				DatagramPacket finalMsg = new DatagramPacket(finalMsgByte, finalMsgString.length(),
-						aHost, udpPort);
+				DatagramPacket finalMsg = new DatagramPacket(finalMsgByte, finalMsgString.length(), aHost, udpPort);
 				transferSocket.send(finalMsg);
 
 				System.out.println("Final confirmation sent to other Bank.");
@@ -755,15 +688,12 @@ public class BankServer extends Thread
 
 				// transferResultMessge = "Loan transfered successfully!";
 				transferResultMessge = true;
-			} catch (Exception e)
-			{
+			} catch (Exception e) {
 				// send rejection to other server to roll back
-				String finalMsgString = Configuration.TransferLoanUdpRequestPrefix + ","
-						+ Configuration.TransferReject;
+				String finalMsgString = Configuration.TransferLoanUdpRequestPrefix + "," + Configuration.TransferReject;
 				byte[] finalMsgByte = finalMsgString.getBytes();
 
-				DatagramPacket finalMsg = new DatagramPacket(finalMsgByte, finalMsgString.length(),
-						aHost, udpPort);
+				DatagramPacket finalMsg = new DatagramPacket(finalMsgByte, finalMsgString.length(), aHost, udpPort);
 				transferSocket.send(finalMsg);
 
 				System.out.println("Roll back request sent to other Bank.");
@@ -776,8 +706,7 @@ public class BankServer extends Thread
 
 			transferSocket.close();
 
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			System.out.println(e.getStackTrace());
 			// transferResultMessge = "An error occurred, please try again
 			// later!";
@@ -787,24 +716,18 @@ public class BankServer extends Thread
 		return transferResultMessge;
 	}
 
-	private double CheckLoanWithOtherBanks(final String clientFullName, String BankName1,
-			final int BankUdpPort1, String BankName2, final int BankUdpPort2)
-			throws InterruptedException
-	{
+	private double CheckLoanWithOtherBanks(final String clientFullName, String BankName1, final int BankUdpPort1,
+			String BankName2, final int BankUdpPort2) throws InterruptedException {
 		double otherBanksLoan = 0;
 
-		Thread t1 = new Thread(new Runnable()
-		{
-			public void run()
-			{
+		Thread t1 = new Thread(new Runnable() {
+			public void run() {
 				loanAmount1 = CheckLoan(clientFullName, BankUdpPort1);
 			}
 		});
 
-		Thread t2 = new Thread(new Runnable()
-		{
-			public void run()
-			{
+		Thread t2 = new Thread(new Runnable() {
+			public void run() {
 				loanAmount2 = CheckLoan(clientFullName, BankUdpPort2);
 			}
 		});
@@ -823,12 +746,10 @@ public class BankServer extends Thread
 		return otherBanksLoan;
 	}
 
-	private double CheckLoan(String fullName, int otherUdpServerPort)
-	{
+	private double CheckLoan(String fullName, int otherUdpServerPort) {
 		double loanValue = 0;
 		DatagramSocket aSocket = null;
-		try
-		{
+		try {
 			String messageContent = Configuration.CheckLoanUdpRequestPrefix + "," + fullName;
 
 			aSocket = new DatagramSocket();
@@ -836,8 +757,7 @@ public class BankServer extends Thread
 			byte[] m = messageContent.getBytes();
 			InetAddress aHost = InetAddress.getByName("localhost");
 			// int serverPort = otherUdpServerPort;
-			DatagramPacket request = new DatagramPacket(m, messageContent.length(), aHost,
-					otherUdpServerPort);
+			DatagramPacket request = new DatagramPacket(m, messageContent.length(), aHost, otherUdpServerPort);
 			aSocket.send(request);
 			byte[] buffer = new byte[2048];
 			DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
@@ -846,14 +766,11 @@ public class BankServer extends Thread
 			String loanReply = new String(reply.getData()).trim();
 			loanValue = Double.parseDouble(loanReply);
 
-		} catch (SocketException e)
-		{
+		} catch (SocketException e) {
 			System.out.println("Socket: " + e.getMessage());
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			System.out.println("IO: " + e.getMessage());
-		} finally
-		{
+		} finally {
 			if (aSocket != null)
 				aSocket.close();
 		}
@@ -861,52 +778,38 @@ public class BankServer extends Thread
 		return loanValue;
 	}
 
-	private void addToAccountsMap(String key, CustomerAccount value)
-	{
-		if (accountsMap.containsKey(key))
-		{
-			synchronized (accountsMap.get(key))
-			{
+	private void addToAccountsMap(String key, CustomerAccount value) {
+		if (accountsMap.containsKey(key)) {
+			synchronized (accountsMap.get(key)) {
 				accountsMap.get(key).add(value);
 			}
-		} else
-		{
+		} else {
 			List<CustomerAccount> valuesList = new ArrayList<CustomerAccount>();
 			valuesList.add(value);
 			accountsMap.put(key, valuesList);
 		}
 	}
 
-	private void addToLoansMap(String key, Loan value)
-	{
-		if (loansMap.containsKey(key))
-		{
-			synchronized (loansMap.get(key))
-			{
+	private void addToLoansMap(String key, Loan value) {
+		if (loansMap.containsKey(key)) {
+			synchronized (loansMap.get(key)) {
 				loansMap.get(key).add(value);
 			}
-		} else
-		{
+		} else {
 			List<Loan> valuesList = new ArrayList<Loan>();
 			valuesList.add(value);
 			loansMap.put(key, valuesList);
 		}
 	}
 
-	private void deleteAccount(String mapKey, String accountNumber)
-	{
-		if (accountsMap.containsKey(mapKey))
-		{
-			synchronized (accountsMap.get(mapKey))
-			{
+	private void deleteAccount(String mapKey, String accountNumber) {
+		if (accountsMap.containsKey(mapKey)) {
+			synchronized (accountsMap.get(mapKey)) {
 				int accountIndexToRemove = 0;
 				List<CustomerAccount> keyAccountsList = accountsMap.get(mapKey);
-				if (keyAccountsList != null)
-				{
-					for (int k = 0; k < keyAccountsList.size(); k++)
-					{
-						if (keyAccountsList.get(k).GetAccNumber().equals(accountNumber))
-						{
+				if (keyAccountsList != null) {
+					for (int k = 0; k < keyAccountsList.size(); k++) {
+						if (keyAccountsList.get(k).GetAccNumber().equals(accountNumber)) {
 							accountIndexToRemove = k;
 						}
 					}
@@ -915,8 +818,7 @@ public class BankServer extends Thread
 
 					accountsMap.remove(mapKey);
 
-					if (keyAccountsList.size() > 0)
-					{
+					if (keyAccountsList.size() > 0) {
 						accountsMap.put(mapKey, keyAccountsList);
 					}
 				}
@@ -924,21 +826,15 @@ public class BankServer extends Thread
 		}
 	}
 
-	private void deleteLoan(String mapKey, int loanId)
-	{
-		if (loansMap.containsKey(mapKey))
-		{
-			synchronized (loansMap.get(mapKey))
-			{
+	private void deleteLoan(String mapKey, int loanId) {
+		if (loansMap.containsKey(mapKey)) {
+			synchronized (loansMap.get(mapKey)) {
 				int indexToRemove = 0;
 				List<Loan> keyLoansList = loansMap.get(mapKey);
 
-				if (keyLoansList != null)
-				{
-					for (int k = 0; k < keyLoansList.size(); k++)
-					{
-						if (keyLoansList.get(k).GetLoanId() == loanId)
-						{
+				if (keyLoansList != null) {
+					for (int k = 0; k < keyLoansList.size(); k++) {
+						if (keyLoansList.get(k).GetLoanId() == loanId) {
 							indexToRemove = k;
 						}
 					}
@@ -947,8 +843,7 @@ public class BankServer extends Thread
 
 					loansMap.remove(mapKey);
 
-					if (keyLoansList.size() > 0)
-					{
+					if (keyLoansList.size() > 0) {
 						loansMap.put(mapKey, keyLoansList);
 					}
 				}
@@ -956,25 +851,20 @@ public class BankServer extends Thread
 		}
 	}
 
-	private Loan LookupLoan(int loanId)
-	{
+	private Loan LookupLoan(int loanId) {
 		Loan loan = new Loan();
 		Map<String, List<Loan>> allLoansInfo = loansMap;
 
 		Iterator loanIterator = allLoansInfo.entrySet().iterator();
-		while (loanIterator.hasNext())
-		{
+		while (loanIterator.hasNext()) {
 			Map.Entry pair = (Map.Entry) loanIterator.next();
 
 			List<Loan> loansList = (ArrayList<Loan>) pair.getValue();
 			String loanMapKey = (String) pair.getKey();
 
-			if (loansList != null)
-			{
-				for (int i = 0; i < loansList.size(); i++)
-				{
-					if (loansList.get(i).GetLoanId() == loanId)
-					{
+			if (loansList != null) {
+				for (int i = 0; i < loansList.size(); i++) {
+					if (loansList.get(i).GetLoanId() == loanId) {
 						loan = loansList.get(i);
 					}
 				}
@@ -987,25 +877,20 @@ public class BankServer extends Thread
 		return loan;
 	}
 
-	private CustomerAccount LookupAccount(String accountNumber)
-	{
+	private CustomerAccount LookupAccount(String accountNumber) {
 		CustomerAccount account = new CustomerAccount();
 		Map<String, List<CustomerAccount>> allAccountsInfo = accountsMap;
 
 		Iterator accountIterator = allAccountsInfo.entrySet().iterator();
-		while (accountIterator.hasNext())
-		{
+		while (accountIterator.hasNext()) {
 			Map.Entry pair = (Map.Entry) accountIterator.next();
 
 			List<CustomerAccount> accountsList = (ArrayList<CustomerAccount>) pair.getValue();
 			String accountMapKey = (String) pair.getKey();
 
-			if (accountsList != null)
-			{
-				for (int i = 0; i < accountsList.size(); i++)
-				{
-					if (accountsList.get(i).GetAccNumber().equals(accountNumber))
-					{
+			if (accountsList != null) {
+				for (int i = 0; i < accountsList.size(); i++) {
+					if (accountsList.get(i).GetAccNumber().equals(accountNumber)) {
 						account = accountsList.get(i);
 					}
 				}
@@ -1018,26 +903,21 @@ public class BankServer extends Thread
 		return account;
 	}
 
-	public ArrayList<String> toLoanString(ArrayList<String> list, List<Loan> loans)
-	{
-		for (Loan l : loans)
-		{
+	public ArrayList<String> toLoanString(ArrayList<String> list, List<Loan> loans) {
+		for (Loan l : loans) {
 			list.add(Utility.dateToString(l.GetDueDate()));
-			list.add(Integer.toString((int) l.GetAmount()));
+			list.add(Integer.toString((int)l.GetAmount()));
 			list.add(Integer.toString(l.GetLoanId()));
 		}
 
 		return list;
 	}
 
-	public Map<Character, List<Account>> getAccountList()
-	{
+	public Map<Character, List<Account>> getAccountList() {
 		Map<Character, List<Account>> list = new HashMap<Character, List<Account>>();
-		for (String key : accountsMap.keySet())
-		{
+		for (String key : accountsMap.keySet()) {
 			List<Account> accountList = new ArrayList<Account>();
-			for (CustomerAccount u : accountsMap.get(key))
-			{
+			for (CustomerAccount u : accountsMap.get(key)) {
 				accountList.add(AccountTranslator.convertFromAzadehToMilad(u));
 			}
 			list.put(key.charAt(0), accountList);
@@ -1045,42 +925,38 @@ public class BankServer extends Thread
 		return list;
 	}
 
-	public Map<Character, List<dlms.replica.milad.Loan>> getLoanList()
-	{
+	public Map<Character, List<dlms.replica.milad.Loan>> getLoanList() {
 		Map<Character, List<dlms.replica.milad.Loan>> list = new HashMap<Character, List<dlms.replica.milad.Loan>>();
-		for (String key : loansMap.keySet())
-		{
+		for (String key : loansMap.keySet()) {
 			List<dlms.replica.milad.Loan> loanList = new ArrayList<dlms.replica.milad.Loan>();
-			for (Loan l : loansMap.get(key))
-			{
+			for (Loan l : loansMap.get(key)) {
 				loanList.add(LoanTranslator.convertFromAzadehToMilad(l));
 			}
 			list.put(key.charAt(0), loanList);
 		}
 		return list;
 	}
-
-	public void setCustomerList(Map<Character, List<Account>> accountMap,
-			Map<Character, List<dlms.replica.milad.Loan>> loanMap)
+	
+	public void setCustomerList(Map<Character, List<Account>> accountMap,  Map<Character, List<dlms.replica.milad.Loan>> loanMap)
 	{
 		loansMap.clear();
 		accountsMap.clear();
-		// add users
-		for (Character c : accountMap.keySet())
+		//add users
+		for(Character c : accountMap.keySet())
 		{
-			ArrayList<CustomerAccount> list = new ArrayList<>();
-			for (Account acc : accountMap.get(c))
+			ArrayList<CustomerAccount> list  = new ArrayList<>();
+			for(Account acc : accountMap.get(c))
 			{
 				list.add(AccountTranslator.convertFromMiladToAzadeh(acc));
 			}
 			accountsMap.put(c.toString(), list);
 		}
-
-		// add loans
-		for (Character c : loanMap.keySet())
+		
+		//add loans
+		for(Character c : loanMap.keySet())
 		{
-			ArrayList<Loan> list = new ArrayList<>();
-			for (dlms.replica.milad.Loan loan : loanMap.get(c))
+			ArrayList<Loan> list  = new ArrayList<>();
+			for(dlms.replica.milad.Loan loan : loanMap.get(c))
 			{
 				list.add(LoanTranslator.convertFromMiladToAzadeh(loan));
 			}

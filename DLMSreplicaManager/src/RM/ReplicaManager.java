@@ -22,7 +22,7 @@ public class ReplicaManager {
 	public String myHostIP;
 	public Integer restarterID;
 	public Integer restartIt;
-	public volatile boolean restartCondition;
+	public volatile boolean restartCondition = false;
 	public Integer StopIt;
 
 	public  ReplicaManager() { //constructor
@@ -59,7 +59,8 @@ public class ReplicaManager {
 	public synchronized void waitter(Process myProcess) throws InterruptedException {
 		ProcessBuilder pb = new ProcessBuilder("java", "-jar", "replica.jar");
 		while(true){
-			if(restartCondition = restartIt.equals(1))
+			Thread.sleep(10);
+			if(restartIt.equals(1))
 			{
 				System.out.println("Replica Should be restarted!!");
 				myProcess.destroy();

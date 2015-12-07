@@ -45,6 +45,13 @@ public class UDPfe implements Runnable
     while(true){
     DatagramSocket aSocket = null;
     try{
+    	try
+		{
+			Thread.sleep(10);
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
     // create socket at agreed port
 	byte[] buffer = new byte[1000];
 	DatagramPacket request = new DatagramPacket(buffer, buffer.length);
