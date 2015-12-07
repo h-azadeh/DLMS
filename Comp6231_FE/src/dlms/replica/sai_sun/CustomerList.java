@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -575,11 +576,13 @@ public class CustomerList
 	 */
 	public String addLoanToUser(User user, double amount)
 	{
-		Calendar cal = Calendar.getInstance();
-
-		cal.add(Calendar.DAY_OF_YEAR, 365);
+		Date dueDate = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(dueDate);
+		c.add(Calendar.DATE, 365);
+		dueDate = c.getTime();
 		Loan loan = new Loan(LOAN_COUNTER, user.getAccount(), amount, Utility.dateToString(
-				cal.getTime()));
+				dueDate));
 		user.getLoanList().add(loan);
 		updateUser(user);
 		writeAllCustomerInfoToFiles();

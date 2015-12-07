@@ -39,7 +39,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 
 	private int clientRequestCounter;
 	private int repliedRequestCounter;
-	private int notificationCounter;
+	private int notificationCounter = 0;
 
 	private Map<String, List<ReplicaReplyContent>> repliesMap;
 	private Map<String, Object> validatedRepliesMap;
@@ -598,7 +598,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 		}		
 		
 		//Todo: Add notificationId and consecutiveId as requested by Milad
-		msg = msg + "-" + notificationCounter + "-0";
+		msg = msg + "-" + notificationCounter + "-1-0";
 		
 		// must notify all three
 		try
@@ -626,7 +626,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 			{
 				//msg = dlms.comp.common.Configuration.Replica3_Name;
 				msg = dlms.comp.common.Configuration.Replica_3_Host;
-				msg = msg + "-" + notificationCounter + "-0";
+				msg = msg + "-" + notificationCounter + "-1-0";
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_1_Host, dlms.comp.common.Configuration.Replica_1_PORT, msg);
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_2_Host, dlms.comp.common.Configuration.Replica_2_PORT, msg);
 			}				
@@ -634,7 +634,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 			{
 				//msg = dlms.comp.common.Configuration.Replica2_Name;
 				msg = dlms.comp.common.Configuration.Replica_2_Host;
-				msg = msg + "-" + notificationCounter + "-0";
+				msg = msg + "-" + notificationCounter + "-1-0";
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_1_Host, dlms.comp.common.Configuration.Replica_1_PORT, msg);
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_3_Host, dlms.comp.common.Configuration.Replica_3_PORT, msg);				
 			}				
@@ -642,7 +642,7 @@ public class BankServerFE extends BankServerInterfacePOA implements Runnable
 			{
 				//msg = dlms.comp.common.Configuration.Replica1_Name;
 				msg = dlms.comp.common.Configuration.Replica_1_Host;
-				msg = msg + "-" + notificationCounter + "-0";
+				msg = msg + "-" + notificationCounter + "-1-0";
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_2_Host, dlms.comp.common.Configuration.Replica_2_PORT, msg);
 				UDPSender.sendUDPPacket(dlms.comp.common.Configuration.Replica_3_Host, dlms.comp.common.Configuration.Replica_3_PORT, msg);
 			}															
