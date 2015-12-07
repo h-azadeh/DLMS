@@ -27,6 +27,7 @@ import javax.jws.WebService;
 import dlms.comp.common.AccountTranslator;
 import dlms.comp.common.LoanTranslator;
 import dlms.replica.milad.Account;
+import dlms.replica.sai_sun.Utility;
 
 /**
  * The implementation of Bank server
@@ -296,6 +297,8 @@ public class BankServer extends Thread {
 
 	public String openAccount(String firstName, String lastName, String emailAdd, String pw, String phoneNumber) {
 		try {
+			System.out.println("Opening account...");
+			
 			CustomerAccount account = new CustomerAccount();
 			account.SetAccNumber("Z");
 			account.SetCreditLimit(0);
@@ -563,12 +566,12 @@ public class BankServer extends Thread {
 
 		returnList = new String[customerCounter];
 		ArrayList<String> list = new ArrayList<String>();
-		for (int q = 0; q < customerCounter; q++) {
-			// returnList[q] = CustomersList.get(q).toString();
+		for (int q = 0; q < customerCounter; q++) {			
 			list.add(CustomersList.get(q).GetFirstName());
 			list.add(CustomersList.get(q).GetLastName());
 			list.add(CustomersList.get(q).GetEmailAddress());
 			list.add(CustomersList.get(q).GetPhoneNumber());
+			list.add(CustomersList.get(q).GetAccNumber());
 			list = toLoanString(list, CustomersList.get(q).GetcustomerLoansList());
 			list.add("\n");
 		}
@@ -891,8 +894,8 @@ public class BankServer extends Thread {
 
 	public ArrayList<String> toLoanString(ArrayList<String> list, List<Loan> loans) {
 		for (Loan l : loans) {
-			list.add(l.GetDueDate().toString());
-			list.add(Double.toString(l.GetAmount()));
+			list.add(Utility.dateToString(l.GetDueDate()));
+			list.add(Integer.toString((int)l.GetAmount()));
 			list.add(Integer.toString(l.GetLoanId()));
 		}
 
