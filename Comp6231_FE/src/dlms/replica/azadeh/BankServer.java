@@ -162,6 +162,9 @@ public class BankServer extends Thread {
 					String clientFirstName = requestParts.get(1).trim();
 					String clientLastName = requestParts.get(2).trim();
 					String clientfullName = clientFirstName + clientLastName;
+					
+					String clientEmail = requestParts.get(5).trim();
+					String clientPhone = requestParts.get(6).trim();
 
 					String strLoanAmount = requestParts.get(3).trim();
 					double loanAmount = Double.parseDouble(strLoanAmount);
@@ -197,7 +200,10 @@ public class BankServer extends Thread {
 						CustomerAccount account = new CustomerAccount();
 						account.SetFirstName(clientFirstName);
 						account.SetLastName(clientLastName);
-
+						
+						account.SetEmailAddress(clientEmail);
+						account.SetPhoneNumber(clientPhone);
+						
 						/*
 						newAccountNumber = account.GetFirstName().substring(0, 2)
 								.concat(account.GetLastName().substring(0, 2));
@@ -615,6 +621,10 @@ public class BankServer extends Thread {
 
 			String ClientFirstName = curAccount.GetFirstName();
 			String ClientLastName = curAccount.GetLastName();
+			String ClientEmail = curAccount.GetEmailAddress();
+			String ClientPhone = curAccount.GetPhoneNumber();
+			
+			String dueDate = Utility.dateToString(curLoan.GetDueDate());
 
 			String MapKey = ClientFirstName.substring(0, 1);
 
@@ -643,7 +653,7 @@ public class BankServer extends Thread {
 			// String.valueOf(curLoan.GetAmount()) + "," +
 			// curLoan.GetDueDate().toString();
 			String requestString = Configuration.TransferLoanUdpRequestPrefix + "," + ClientFirstName + ","
-					+ ClientLastName + "," + String.valueOf(curLoan.GetAmount()) + ",2016-11-01";
+					+ ClientLastName + "," + String.valueOf(curLoan.GetAmount()) + "," + dueDate + "," + ClientEmail + "," + ClientPhone;
 			byte[] requestByte = requestString.getBytes();
 
 			serverOutputBuffer.println("Request string:" + requestString);
